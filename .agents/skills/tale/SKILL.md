@@ -101,10 +101,10 @@ node .agents/skills/tale/scripts/tale-lint.mjs knowledge/architecture/ --json
 To install this skill into another repository or globally on your machine:
 
 ```bash
-# Install to current repository (.agents/skills/tale)
-bash .agents/skills/tale/scripts/install.sh
+# Install directly from remote repository into current project
+curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/template/main/.agents/skills/tale/scripts/install.sh | bash
 
-# Install to a specific target project
+# Install locally to a specific target project
 bash .agents/skills/tale/scripts/install.sh --project /path/to/project
 
 # Install globally for all repositories (~/.gemini/config/skills/tale)

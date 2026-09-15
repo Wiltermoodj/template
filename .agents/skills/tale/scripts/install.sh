@@ -2,10 +2,30 @@
 set -euo pipefail
 
 # TALE Skill Installer
-# Copies the tale skill into a target repository or the global Gemini/Antigravity configuration.
+# Copies the tale skill into a target repository or global agent configuration.
+# Supports both local repository execution and remote one-liner execution via curl.
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_URL="https://github.com/Wiltermoodj/template.git"
+BRANCH="${TALE_BRANCH:-main}"
+TMP_DIR="${TMPDIR:-/tmp}/tale-install-$$"
+
+cleanup() {
+  if [[ -d "${TMP_DIR}" ]]; then
+    rm -rf "${TMP_DIR}" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT
+
+SCRIPT_DIR=""
+if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd || true)"
+fi
+SKILL_ROOT=""
+
+# Determine if running locally from within the template repo or skill directory
+if [[ -n "${SCRIPT_DIR}" ]] && [[ -f "${SCRIPT_DIR}/../SKILL.md" ]]; then
+  SKILL_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+fi
 
 show_help() {
   cat << 'EOF'
@@ -14,22 +34,26 @@ TALE Skill Installer
 Usage:
   install.sh [options]
 
+One-liner Remote Install:
+  curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/template/main/.agents/skills/tale/scripts/install.sh | bash
+
 Options:
   -g, --global              Install skill globally (~/.gemini/config/skills/tale)
   -p, --project <PATH>      Install skill into a project repository (<PATH>/.agents/skills/tale)
   -h, --help                Show this help message
 
 Default:
-  If no options are provided, installs into the current working directory at ./.agents/skills/tale
+  Installs into the current working directory at ./.agents/skills/tale and ./.agents/rules/
 EOF
 }
 
-TARGET_DIR=""
+TARGET_TYPE="project"
+TARGET_PATH="$(pwd)"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -g|--global)
-      TARGET_DIR="${HOME}/.gemini/config/skills/tale"
+      TARGET_TYPE="global"
       shift
       ;;
     -p|--project)
@@ -37,7 +61,8 @@ while [[ $# -gt 0 ]]; do
         echo "Error: --project requires a directory path." >&2
         exit 1
       fi
-      TARGET_DIR="${2}/.agents/skills/tale"
+      TARGET_TYPE="project"
+      TARGET_PATH="$2"
       shift 2
       ;;
     -h|--help)
@@ -52,34 +77,79 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "${TARGET_DIR}" ]]; then
-  TARGET_DIR="$(pwd)/.agents/skills/tale"
+# Resolve absolute target path
+if [[ "${TARGET_TYPE}" == "global" ]]; then
+  SKILL_DEST="${HOME}/.gemini/config/skills/tale"
+  RULES_DEST="${HOME}/.gemini/config/rules"
+else
+  TARGET_PATH="$(cd "${TARGET_PATH}" 2>/dev/null && pwd || { mkdir -p "${TARGET_PATH}" && cd "${TARGET_PATH}" && pwd; })"
+  SKILL_DEST="${TARGET_PATH}/.agents/skills/tale"
+  RULES_DEST="${TARGET_PATH}/.agents/rules"
 fi
 
-echo "Installing ASD-STE100 skill..."
-echo "  Source: ${SKILL_ROOT}"
-echo "  Target: ${TARGET_DIR}"
+# Acquire skill source tree
+if [[ -n "${SKILL_ROOT}" ]] && [[ -f "${SKILL_ROOT}/SKILL.md" ]]; then
+  echo "[tale-install] Using local source tree at: ${SKILL_ROOT}"
+  SOURCE_DIR="${SKILL_ROOT}"
+  RULES_SRC="$(cd "${SKILL_ROOT}/../../rules" 2>/dev/null && pwd)/agent-conciseness-and-tale.md"
+else
+  echo "[tale-install] Fetching tale skill from ${REPO_URL} (${BRANCH})..."
+  mkdir -p "${TMP_DIR}"
+  git clone --depth 1 --branch "${BRANCH}" --filter=blob:none --sparse "${REPO_URL}" "${TMP_DIR}" >/dev/null 2>&1 || \
+    git clone --depth 1 --branch "${BRANCH}" "${REPO_URL}" "${TMP_DIR}" >/dev/null 2>&1 || {
+      echo "Error: Failed to clone ${REPO_URL}." >&2
+      exit 1
+    }
 
-mkdir -p "${TARGET_DIR}"
-cp -R "${SKILL_ROOT}/SKILL.md" "${TARGET_DIR}/"
-cp -R "${SKILL_ROOT}/references" "${TARGET_DIR}/"
-cp -R "${SKILL_ROOT}/scripts" "${TARGET_DIR}/"
+  (
+    cd "${TMP_DIR}"
+    git sparse-checkout set .agents/skills/tale .agents/rules >/dev/null 2>&1 || true
+  )
 
-if [[ -d "${SKILL_ROOT}/resources" ]]; then
-  cp -R "${SKILL_ROOT}/resources" "${TARGET_DIR}/"
+  SOURCE_DIR="${TMP_DIR}/.agents/skills/tale"
+  RULES_SRC="${TMP_DIR}/.agents/rules/agent-conciseness-and-tale.md"
 fi
 
-# Install governance rule if available
-RULES_SRC="${SKILL_ROOT}/../../rules/agent-conciseness-and-tale.md"
+if [[ ! -f "${SOURCE_DIR}/SKILL.md" ]]; then
+  echo "Error: SKILL.md not found in source directory." >&2
+  exit 1
+fi
+
+echo "[tale-install] Installing ASD-STE100 tale skill..."
+echo "  Source: ${SOURCE_DIR}"
+echo "  Skill Destination: ${SKILL_DEST}"
+echo "  Rules Destination: ${RULES_DEST}"
+
+mkdir -p "${SKILL_DEST}"
+mkdir -p "${RULES_DEST}"
+
+# Copy skill files
+cp "${SOURCE_DIR}/SKILL.md" "${SKILL_DEST}/"
+
+if [[ -d "${SOURCE_DIR}/references" ]]; then
+  mkdir -p "${SKILL_DEST}/references"
+  cp -R "${SOURCE_DIR}/references/." "${SKILL_DEST}/references/"
+fi
+
+if [[ -d "${SOURCE_DIR}/scripts" ]]; then
+  mkdir -p "${SKILL_DEST}/scripts"
+  cp -R "${SOURCE_DIR}/scripts/." "${SKILL_DEST}/scripts/"
+fi
+
+if [[ -d "${SOURCE_DIR}/resources" ]]; then
+  mkdir -p "${SKILL_DEST}/resources"
+  cp -R "${SOURCE_DIR}/resources/." "${SKILL_DEST}/resources/"
+fi
+
+# Copy governance rules
 if [[ -f "${RULES_SRC}" ]]; then
-  if [[ "${TARGET_DIR}" == *"/skills/tale" ]]; then
-    RULES_TARGET="$(dirname "$(dirname "${TARGET_DIR}")")/rules"
-    mkdir -p "${RULES_TARGET}"
-    cp "${RULES_SRC}" "${RULES_TARGET}/"
-    echo "✓ Governance rule installed at: ${RULES_TARGET}/agent-conciseness-and-tale.md"
-  fi
+  cp "${RULES_SRC}" "${RULES_DEST}/agent-conciseness-and-tale.md"
+  echo "  ✓ Installed governance rule: ${RULES_DEST}/agent-conciseness-and-tale.md"
 fi
 
-chmod +x "${TARGET_DIR}/scripts/tale-lint.mjs" "${TARGET_DIR}/scripts/tale-lint.ts" "${TARGET_DIR}/scripts/install.sh"
+# Make scripts executable
+if [[ -d "${SKILL_DEST}/scripts" ]]; then
+  chmod +x "${SKILL_DEST}/scripts"/* >/dev/null 2>&1 || true
+fi
 
-echo "✓ ASD-STE100 skill installed successfully at: ${TARGET_DIR}"
+echo "✓ ASD-STE100 tale skill installed successfully."

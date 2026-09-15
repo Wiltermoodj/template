@@ -123,7 +123,7 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 - **Rule:** Use the past participle form only as an adjective (for example: "the *damaged* cable", "the *closed* valve").
 
 ### Rule 3.4: No Complex Auxiliary Verb Constructions
-- **Rule:** Do not use complex compound verb structures (for example: *would have been*, *could be causing*, *might have required*).
+- **Rule:** Do not use complex compound verb structures (for example: `would have been`, `could be causing`, `might have required`).
 - **Example:**
   - *Non-STE:* "The pump might have been damaged by cavitation."
   - *STE:* "Cavitation can cause damage to the pump."
@@ -155,7 +155,7 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 ## Section 4: Sentences (Rules 4.1 – 4.5)
 
 ### Rule 4.1: Short and Clear Sentences (One Topic Per Sentence)
-- **Rule:** Write short, clear sentences. Each sentence must express only **one main idea or action**.
+- **Rule:** Write short, clear sentences. Each sentence must express only **one primary idea or action**.
 
 ### Rule 4.2: No Omission of Functional Words and No Contractions
 - **Rule:** 
@@ -223,7 +223,7 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 - **Rule:** Each paragraph must cover only **one subject or concept**.
 
 ### Rule 6.6: Maximum 6 Sentences Per Paragraph
-- **Rule:** No paragraph may contain more than **six sentences**. Split larger explanations into multiple structured paragraphs or lists.
+- **Rule:** No paragraph can contain more than **six sentences**. Split larger explanations into multiple structured paragraphs or lists.
 
 ---
 
@@ -272,10 +272,10 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
   2. Numbers that designate parts, models, or standards (for example: `ISO-9001`, `Model 300`).
   3. Quoted text strings (for example: `"INVALID_STATE"`).
   4. Compound acronyms and initialisms (for example: `ASD-STE100`, `HTML5`, `UUIDv4`).
-  5. Proper nouns of people, places, or companies.
+  5. Proper nouns of personnel, places, or companies.
 
 ### Rule 8.7: Hyphenated Words Count as 1 Word
-- **Rule:** Any hyphenated compound word (for example: *push-button*, *built-in*, *read-only*) counts as **one word**.
+- **Rule:** Each hyphenated compound word (for example: *push-button*, *built-in*, *read-only*) counts as **one word**.
 
 ---
 

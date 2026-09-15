@@ -6,7 +6,7 @@ This guide provides transformation patterns to convert architecture records, cod
 
 ## 1. Core Transformation Algorithm
 
-When transforming any text or generating a technical response, execute this 3-step loop:
+When transforming text or generating a technical response, execute this 3-step loop:
 
 ```
 [Input Non-STE Text]
@@ -59,7 +59,7 @@ When transforming any text or generating a technical response, execute this 3-st
 - **Non-STE Input:**
   > "Testing the module showed that it's failing because of unhandled null pointer exceptions occurring when the user's auth token is missing." *(21 words, nominalization, contraction, progressive verbs, unapproved words: *testing*, *it's*, *occurring*)*
 - **ASD-STE100 Issue 9 Revision:**
-  > "The module test failed because of a null pointer exception. This error occurs when the user authentication token is missing." *(20 words across 2 sentences; active voice; no contractions; approved terms)*
+  > "The module test failed because of a null pointer exception. This error occurs when the user authentication token is not present." *(20 words across 2 sentences; active voice; no contractions; approved terms)*
 
 ### Example 4: Safety & Fault Warnings
 - **Non-STE Input:**
@@ -74,14 +74,14 @@ When transforming any text or generating a technical response, execute this 3-st
 ## 3. High-Frequency Anti-Pattern Checklist for Agents
 
 Before printing responses or saving documentation, verify:
-- [ ] Are there any semicolons (`;`)? $\rightarrow$ **Split them.**
+- [ ] Are there semicolons (`;`)? $\rightarrow$ **Split them.**
 - [ ] Are there contractions (`don't`, `can't`, `it's`)? $\rightarrow$ **Expand them.**
 - [ ] Are there progressive "-ing" verbs (`is writing`, `are processing`)? $\rightarrow$ **Use simple present/past.**
 - [ ] Are actions hidden in nouns (`do the execution of`)? $\rightarrow$ **Use direct verbs (`execute`, `do`).**
 - [ ] Are instructions written in passive voice? $\rightarrow$ **Use imperative commands.**
 - [ ] Did you use Latin abbreviations (`e.g.`, `i.e.`, `etc.`)? $\rightarrow$ **Replace with English words.**
 - [ ] Are all sentences within limits (<=20 words for instructions, <=25 words for descriptions)?
-- [ ] Are any paragraphs longer than 6 sentences? $\rightarrow$ **Divide them.**
+- [ ] Are paragraphs longer than 6 sentences? $\rightarrow$ **Divide them.**
 
 ---
 

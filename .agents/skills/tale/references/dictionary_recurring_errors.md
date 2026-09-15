@@ -1,6 +1,6 @@
 # ASD-STE100 Issue 9 — Part 2: Recurring Errors & Word Replacements
 
-This reference contains the complete **List of Recurring Errors** (Part 2, Pages 2-0-17 & 2-0-18) and core vocabulary mappings from ASD-STE100 Issue 9.
+This reference contains all items in the **List of Recurring Errors** (Part 2, Pages 2-0-17 & 2-0-18) and core vocabulary mappings from ASD-STE100 Issue 9.
 
 ---
 

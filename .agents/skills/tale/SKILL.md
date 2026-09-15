@@ -24,7 +24,7 @@ All documentation and agent output must obey the writing rules and controlled vo
    - **Maximum 20 words** for procedural instructions (commands).
    - **Maximum 25 words** for descriptive sentences.
 5. **Strict Active Voice & Simple Tenses:** Write in the active voice. Use only Infinitive, Imperative, Simple Present, Simple Past, and Simple Future (*will*).
-6. **No Progressive "-ing" Verbs:** Never use "-ing" words as progressive action verbs (*is running*, *was opening*). Use "-ing" words only as technical nouns (*the bearing*) or modifiers (*cooling system*).
+6. **No Progressive "-ing" Verbs:** Never use "-ing" words as progressive action verbs (`is running`, `was opening`). Use "-ing" words only as technical nouns (`the bearing`) or modifiers (`cooling system`).
 7. **Multi-Word Noun Limit:** Multi-word nouns must not exceed **three words** (for example, *APU shutoff valve*).
 8. **Paragraph Limits:** Maximum of **one topic** and **six sentences** per paragraph.
 
@@ -68,6 +68,13 @@ When crafting text, consult these specialized sub-references:
 Validate markdown files, directories, text strings, or code comments against ASD-STE100 Issue 9 rules with zero third-party dependencies:
 
 ```bash
+# Validate all markdown documentation across current repository (default)
+node .agents/skills/tale/scripts/tale-lint.mjs
+
+# Automatically fix safe violations (contractions, Latin terms, ensure -> make sure that)
+node .agents/skills/tale/scripts/tale-lint.mjs --fix
+node .agents/skills/tale/scripts/tale-lint.mjs --fix docs/
+
 # Validate markdown documentation files or directories
 node .agents/skills/tale/scripts/tale-lint.mjs knowledge/architecture/CONTEXT-MAP.md
 node .agents/skills/tale/scripts/tale-lint.mjs knowledge/architecture/
@@ -121,7 +128,7 @@ When generating responses or authoring documentation in this repository:
 When generating internal thoughts or reasoning:
 1. **Bullet Points Only:** Use 2 to 4 bullet points per thought block.
 2. **Telemetric Cadence:** Report `State`, `Intent`, `Action`, and `Check`.
-3. **Zero Conversational Fluff:** Avoid conversational preamble, rhetorical debates, or copying full files into thoughts.
+3. **Zero Conversational Fluff:** Prevent conversational preamble, rhetorical debates, or copying full files into thoughts.
 4. **Sentence Limit:** Keep each bullet sentence less than 20 words.
 
 ---
@@ -129,7 +136,7 @@ When generating internal thoughts or reasoning:
 ## 8. Code Authoring & Identifier Naming Standard
 
 When authoring code:
-1. **Action-First Functions:** Start function names with an approved action verb (e.g. `calculateTotal()`, `validateInput()`).
+1. **Action-First Functions:** Start function names with an approved action verb (for example, `calculateTotal()`, `validateInput()`).
 2. **Noun Cluster Cap:** Identifiers and variables must not exceed three words.
 3. **Comments in Simple Present Tense:** Write comments in active voice stating *why* code exists. Prohibit semicolons and contractions in comments.
 

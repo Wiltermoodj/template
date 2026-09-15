@@ -9,21 +9,30 @@
  * - Enforces sentence length limits:
  *     - Procedural (lists/steps): <= 20 words (Rule 5.1).
  *     - Descriptive: <= 25 words (Rule 6.3).
- * - Flags unapproved high-frequency non-STE words from Recurring Errors (Part 2).
+ * - Flags unapproved high-frequency non-STE words from Recurring Errors (Part 2) with full inflections.
+ * - Flags progressive '-ing' verbs (Rule 1.6 / Rule 6).
  */
 
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as process from "node:process";
+import { fileURLToPath } from "node:url";
 
 export const RECURRING_ERRORS = {
   "\\bacceptable\\b": "PERMITTED",
   "\\balternate\\b": "ALTERNATIVE",
+  "\\bany\\b": "ALL / EACH / [omit]",
   "\\bavoid\\b": "PREVENT",
+  "\\bavoids\\b": "PREVENTS",
+  "\\bavoided\\b": "PREVENTED",
+  "\\bavoiding\\b": "PREVENTING",
   "\\bboth\\b": "THE TWO",
-  "\\bcomplete\\b": "COMPLETED",
+  "\\b(?:the|a|an|this|that|these|those)\\s+complete\\b": "COMPLETED",
+  "\\bcomplete\\s+(?:assembly|assemblies|set|sets|system|systems|list|lists|guide|guides|manual|manuals|unit|units|record|records|cycle|cycles)\\b":
+    "COMPLETED",
   "\\bensure\\b": "MAKE SURE",
   "\\bensures\\b": "MAKES SURE",
+  "\\bensured\\b": "MADE SURE",
   "\\bensuring\\b": "MAKING SURE",
   "\\bfurther\\b": "MORE",
   "\\bhave to\\b": "MUST / Use imperative form",
@@ -40,20 +49,27 @@ export const RECURRING_ERRORS = {
   "\\bportions\\b": "PARTS",
   "\\bpress\\b": "PUSH",
   "\\bpresses\\b": "PUSHES",
+  "\\bpressed\\b": "PUSHED",
   "\\bpressing\\b": "PUSHING",
   "\\breach\\b": "GET TO",
   "\\breaches\\b": "GETS TO",
+  "\\breached\\b": "GOT TO",
   "\\breaching\\b": "GETTING TO",
   "\\brepeat\\b": "DO ... AGAIN",
   "\\brepeats\\b": "DOES ... AGAIN",
+  "\\brepeated\\b": "DID ... AGAIN",
   "\\brotate\\b": "TURN",
   "\\brotates\\b": "TURNS",
+  "\\brotated\\b": "TURNED",
   "\\brotating\\b": "TURNING",
   "\\bsecure\\b": "ATTACH / SAFETY",
   "\\bsecures\\b": "ATTACHES",
+  "\\bsecured\\b": "ATTACHED",
   "\\bsecuring\\b": "ATTACHING",
   "\\bshall\\b": "MUST",
   "\\bshould\\b": "MUST",
+  "\\bsince\\b(?=\\s+[a-z0-9_]+\\s+(?:is|was|were|are|has|have|had|fails|failed|expires|expired|starts|started|cannot|can|will))":
+    "BECAUSE",
   "\\btherefore\\b": "THUS / AS A RESULT",
   "\\butilize\\b": "USE",
   "\\butilizes\\b": "USES",
@@ -99,6 +115,41 @@ export const CONTRACTIONS = [
   "\\bthey'll\\b",
 ];
 
+export const CONTRACTION_REPLACEMENTS = {
+  "can't": "cannot",
+  "don't": "do not",
+  "doesn't": "does not",
+  "didn't": "did not",
+  "won't": "will not",
+  "wouldn't": "would not",
+  "shouldn't": "should not",
+  "couldn't": "could not",
+  "isn't": "is not",
+  "aren't": "are not",
+  "wasn't": "was not",
+  "weren't": "were not",
+  "hasn't": "has not",
+  "haven't": "have not",
+  "hadn't": "had not",
+  "let's": "let us",
+  "it's": "it is",
+  "that's": "that is",
+  "there's": "there is",
+  "they're": "they are",
+  "we're": "we are",
+  "you're": "you are",
+  "i'm": "I am",
+  "you've": "you have",
+  "we've": "we have",
+  "they've": "they have",
+  "i've": "I have",
+  "you'll": "you will",
+  "he'll": "he will",
+  "she'll": "she will",
+  "we'll": "we will",
+  "they'll": "they will",
+};
+
 export const LATIN_ABBREVIATIONS = {
   "\\be\\.g\\.\\b": "for example",
   "\\be\\.g\\b": "for example",
@@ -111,6 +162,42 @@ export const LATIN_ABBREVIATIONS = {
   "\\bvs\\b": "compared with / against",
 };
 
+export const LATIN_REPLACEMENTS = {
+  "e.g.": "for example,",
+  "e.g": "for example,",
+  "i.e.": "that is,",
+  "i.e": "that is,",
+  "etc.": "and so on",
+  "etc": "and so on",
+  "vs.": "against",
+  "vs": "against",
+};
+
+export const SAFE_WORD_FIXES = {
+  "ensure": "make sure that",
+  "Ensure": "Make sure that",
+  "ensures": "makes sure that",
+  "Ensures": "Makes sure that",
+  "ensured": "made sure that",
+  "Ensured": "Made sure that",
+  "utilize": "use",
+  "Utilize": "Use",
+  "utilizes": "uses",
+  "Utilizes": "Uses",
+  "utilized": "used",
+  "Utilized": "Used",
+  "utilizing": "using",
+  "Utilizing": "Using",
+};
+
+// Known progressive nouns/technical terms that are not action verbs
+const NOUN_ING_EXCEPTIONS = new Set([
+  "bearing", "training", "lighting", "warning", "heading",
+  "spring", "wing", "string", "ceiling", "building", "cabling",
+  "housing", "coating", "lining", "tubing", "padding", "routing",
+  "spacing", "ranking", "meaning", "understanding", "timing"
+]);
+
 /**
  * Calculates sentence word count obeying ASD-STE100 Section 8:
  * - Parentheses count as 1 word in the parent sentence.
@@ -121,9 +208,11 @@ export const LATIN_ABBREVIATIONS = {
 export function calculateSTEWordCount(sentence) {
   let text = sentence;
 
-  // Replace quoted strings with a single token
+  // Replace double-quoted strings with a single token
   text = text.replace(/"[^"]*"/g, " QUOTED_TOKEN ");
-  text = text.replace(/'[^']*'/g, " QUOTED_TOKEN ");
+
+  // Replace true single-quoted strings (delimited by spaces/boundaries, not possessive apostrophes like user's)
+  text = text.replace(/(?<=^|[\s([{\<])'([^'\n]+)'(?=[\s)\]}>.,:;!?]|$)/g, " QUOTED_TOKEN ");
 
   // Replace parenthetical clauses with a single token (Rule 8.5)
   text = text.replace(/\([^)]*\)/g, " PAREN_TOKEN ");
@@ -144,12 +233,38 @@ export function calculateSTEWordCount(sentence) {
 }
 
 /**
+ * Protects abbreviations before sentence splitting to prevent false sentence boundaries.
+ */
+function protectAbbreviations(text) {
+  return text
+    .replace(/\be\.g\./gi, "___EG_DOT___")
+    .replace(/\bi\.e\./gi, "___IE_DOT___")
+    .replace(/\bfig\./gi, "___FIG_DOT___")
+    .replace(/\bref\./gi, "___REF_DOT___")
+    .replace(/\bno\./gi, "___NO_DOT___")
+    .replace(/\bvs\./gi, "___VS_DOT___")
+    .replace(/\bdr\./gi, "___DR_DOT___");
+}
+
+function restoreAbbreviations(text) {
+  return text
+    .replace(/___EG_DOT___/g, "e.g.")
+    .replace(/___IE_DOT___/g, "i.e.")
+    .replace(/___FIG_DOT___/g, "Fig.")
+    .replace(/___REF_DOT___/g, "Ref.")
+    .replace(/___NO_DOT___/g, "No.")
+    .replace(/___VS_DOT___/g, "vs.")
+    .replace(/___DR_DOT___/g, "Dr.");
+}
+
+/**
  * Parses markdown text into sentences while properly handling:
  * - YAML frontmatter skipping
  * - Fenced code blocks skipping
- * - Headers, tables, and blockquotes skipping
- * - Multi-line paragraph buffering (prevents soft-wrapped lines from splitting sentences)
- * - Markdown links and code spans normalization
+ * - Tables and HTML comments skipping
+ * - Blockquotes: strips leading '>' and alert markers ([!NOTE]), retaining text for linting
+ * - Markdown links and inline code normalization
+ * - Protection of abbreviation periods
  */
 export function splitIntoSentences(content) {
   const sentences = [];
@@ -157,13 +272,14 @@ export function splitIntoSentences(content) {
 
   let inFrontmatter = false;
   let inCodeBlock = false;
+  let inNonSTEBlock = false;
 
   const blocks = [];
   let currentBlock = null;
 
   for (let idx = 0; idx < lines.length; idx++) {
     const rawLine = lines[idx];
-    const stripped = rawLine.trim();
+    let stripped = rawLine.trim();
     const lineNum = idx + 1;
 
     // Track YAML frontmatter
@@ -191,6 +307,38 @@ export function splitIntoSentences(content) {
       continue;
     }
 
+    // Track Non-STE example blocks
+    if (stripped.toLowerCase().includes("non-ste")) {
+      inNonSTEBlock = true;
+      if (currentBlock) {
+        blocks.push(currentBlock);
+        currentBlock = null;
+      }
+      continue;
+    }
+    if (inNonSTEBlock) {
+      if (
+        stripped.toLowerCase().includes("revision") ||
+        stripped.toLowerCase().includes("asd-ste") ||
+        stripped.startsWith("###") ||
+        stripped.startsWith("---") ||
+        (/^(\*|-|\d+\.)\s+/.test(stripped) && !stripped.toLowerCase().includes("non-ste"))
+      ) {
+        inNonSTEBlock = false;
+      } else {
+        continue;
+      }
+    }
+
+    // Handle blockquotes: do not skip, strip '>' and optional alert tags
+    if (stripped.startsWith(">")) {
+      stripped = stripped.replace(/^>+\s*/, "").trim();
+      // Skip callout tag lines like [!NOTE], [!WARNING] if alone or strip prefix
+      if (/^\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i.test(stripped)) {
+        stripped = stripped.replace(/^\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, "").trim();
+      }
+    }
+
     // Skip empty lines (paragraph boundary)
     if (!stripped) {
       if (currentBlock) {
@@ -200,15 +348,12 @@ export function splitIntoSentences(content) {
       continue;
     }
 
-    // Skip Markdown headers, tables, HTML comments, blockquote citations/examples
+    // Skip Markdown headers, tables, HTML comments
     if (
       stripped.startsWith("#") ||
       stripped.startsWith("|") ||
       stripped.startsWith("![") ||
-      stripped.startsWith(">") ||
-      stripped.startsWith("<!--") ||
-      stripped.includes("Non-STE:") ||
-      stripped.includes("*Non-STE:*")
+      stripped.startsWith("<!--")
     ) {
       if (currentBlock) {
         blocks.push(currentBlock);
@@ -246,16 +391,23 @@ export function splitIntoSentences(content) {
   for (const block of blocks) {
     const startLineNum = block.lines[0].lineNum;
     let fullText = block.lines.map((l) => l.text).join(" ");
-    fullText = fullText.replace(/`[^`]*`/g, " CODE_SPAN ");
+    
+    // Normalize code spans to placeholder
+    fullText = fullText.replace(/`[^`]*`/g, " code_span ");
+    // Normalize markdown links [label](url) -> label
     fullText = fullText.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+    // Strip parenthetical asterisks
     fullText = fullText.replace(/\*\([^*]*\)\*/g, "");
 
-    const rawSentences = fullText.split(/(?<=[.!?])\s+(?=[A-Z0-9"]|$)/);
+    const protectedText = protectAbbreviations(fullText);
+
+    // Split on terminal punctuation followed by space and uppercase/quote or end of string
+    const rawSentences = protectedText.split(/(?<=[.!?])\s+(?=[A-Z0-9"]|$)/);
     for (const raw of rawSentences) {
-      const s = raw.trim();
-      if (s.length > 0) {
+      const restored = restoreAbbreviations(raw).trim();
+      if (restored.length > 0) {
         sentences.push({
-          text: s,
+          text: restored,
           lineNum: startLineNum,
           isListItem: block.isListItem,
         });
@@ -267,7 +419,7 @@ export function splitIntoSentences(content) {
 }
 
 /**
- * Extracts comments and docstrings from TypeScript/JavaScript source code.
+ * Extracts comments and docstrings from source code while ignoring comments inside string literals.
  */
 export function extractCodeComments(content) {
   const sentences = [];
@@ -308,19 +460,55 @@ export function extractCodeComments(content) {
       continue;
     }
 
-    // Handle block comment start
-    if (stripped.startsWith("/*")) {
-      if (stripped.includes("*/")) {
-        const inner = stripped
+    // Inspect line state char-by-char to avoid detecting '//' or '/*' inside quotes
+    let inQuote = null;
+    let commentStartIdx = -1;
+    let isBlockStart = false;
+
+    for (let c = 0; c < rawLine.length; c++) {
+      const ch = rawLine[c];
+      const next = rawLine[c + 1] || "";
+
+      if (inQuote) {
+        if (ch === "\\" && rawLine[c + 1]) {
+          c++; // skip escaped char
+        } else if (ch === inQuote) {
+          inQuote = null;
+        }
+        continue;
+      }
+
+      if (ch === '"' || ch === "'" || ch === "`") {
+        inQuote = ch;
+        continue;
+      }
+
+      if (ch === "/" && next === "/") {
+        // Single-line comment starts here
+        commentStartIdx = c;
+        break;
+      }
+
+      if (ch === "/" && next === "*") {
+        commentStartIdx = c;
+        isBlockStart = true;
+        break;
+      }
+    }
+
+    if (isBlockStart) {
+      const rest = rawLine.substring(commentStartIdx);
+      if (rest.includes("*/")) {
+        const inner = rest
           .replace(/^\/\*+/, "")
-          .replace(/\*+\/$/, "")
+          .replace(/\*+\/.*$/, "")
           .trim();
         if (inner && !inner.startsWith("@")) {
           blocks.push({ lines: [{ text: inner, lineNum }] });
         }
       } else {
         inBlockComment = true;
-        const inner = stripped.replace(/^\/\*+/, "").trim();
+        const inner = rest.replace(/^\/\*+/, "").trim();
         if (inner && !inner.startsWith("@")) {
           currentBlock = { lines: [{ text: inner, lineNum }] };
         }
@@ -328,25 +516,20 @@ export function extractCodeComments(content) {
       continue;
     }
 
-    // Handle single line comment
-    const commentIdx = rawLine.indexOf("//");
-    if (commentIdx !== -1) {
-      const before = rawLine.substring(0, commentIdx);
-      if (!before.includes("http:") && !before.includes("https:")) {
-        const commentText = rawLine.substring(commentIdx + 2).trim();
-        if (
-          commentText &&
-          !commentText.startsWith("eslint-") &&
-          !commentText.startsWith("@ts-") &&
-          !commentText.startsWith("prettier-ignore")
-        ) {
-          if (!currentBlock) {
-            currentBlock = { lines: [{ text: commentText, lineNum }] };
-          } else {
-            currentBlock.lines.push({ text: commentText, lineNum });
-          }
-          continue;
+    if (commentStartIdx !== -1) {
+      const commentText = rawLine.substring(commentStartIdx + 2).trim();
+      if (
+        commentText &&
+        !commentText.startsWith("eslint-") &&
+        !commentText.startsWith("@ts-") &&
+        !commentText.startsWith("prettier-ignore")
+      ) {
+        if (!currentBlock) {
+          currentBlock = { lines: [{ text: commentText, lineNum }] };
+        } else {
+          currentBlock.lines.push({ text: commentText, lineNum });
         }
+        continue;
       }
     }
 
@@ -363,14 +546,15 @@ export function extractCodeComments(content) {
   for (const block of blocks) {
     const startLineNum = block.lines[0].lineNum;
     let fullText = block.lines.map((l) => l.text).join(" ");
-    fullText = fullText.replace(/`[^`]*`/g, " CODE_SPAN ");
+    fullText = fullText.replace(/`[^`]*`/g, " code_span ");
 
-    const rawSentences = fullText.split(/(?<=[.!?])\s+(?=[A-Z0-9"]|$)/);
+    const protectedText = protectAbbreviations(fullText);
+    const rawSentences = protectedText.split(/(?<=[.!?])\s+(?=[A-Z0-9"]|$)/);
     for (const raw of rawSentences) {
-      const s = raw.trim();
-      if (s.length > 0) {
+      const restored = restoreAbbreviations(raw).trim();
+      if (restored.length > 0) {
         sentences.push({
-          text: s,
+          text: restored,
           lineNum: startLineNum,
           isListItem: false,
         });
@@ -393,8 +577,12 @@ export function lintSTE(content, isCodeFile = false) {
   for (const item of sentences) {
     const { text, lineNum, isListItem } = item;
 
+    // Mask HTML entities and raw URLs before checks
+    let cleanText = text.replace(/&[a-zA-Z0-9#]+;/g, " ENTITY_TOKEN ");
+    cleanText = cleanText.replace(/https?:\/\/[^\s)\]>"]+/g, " URL_TOKEN ");
+
     // Rule 8.1: Semicolons
-    if (text.includes(";")) {
+    if (cleanText.includes(";")) {
       issues.push({
         lineNum,
         rule: "Rule 8.1",
@@ -406,7 +594,7 @@ export function lintSTE(content, isCodeFile = false) {
     // Rule 4.2: Contractions
     for (const pattern of CONTRACTIONS) {
       const regex = new RegExp(pattern, "i");
-      const match = text.match(regex);
+      const match = cleanText.match(regex);
       if (match) {
         issues.push({
           lineNum,
@@ -420,7 +608,7 @@ export function lintSTE(content, isCodeFile = false) {
     // GR-6: Latin abbreviations
     for (const [pattern, replacement] of Object.entries(LATIN_ABBREVIATIONS)) {
       const regex = new RegExp(pattern, "i");
-      const match = text.match(regex);
+      const match = cleanText.match(regex);
       if (match) {
         issues.push({
           lineNum,
@@ -431,10 +619,24 @@ export function lintSTE(content, isCodeFile = false) {
       }
     }
 
+    // Rule 1.6 / Rule 6: Progressive -ing verbs (auxiliary + present participle)
+    const progressiveMatch = cleanText.match(/\b(am|is|are|was|were|be|been|being)\s+([a-z]+ing)\b/i);
+    if (progressiveMatch) {
+      const participle = progressiveMatch[2].toLowerCase();
+      if (!NOUN_ING_EXCEPTIONS.has(participle)) {
+        issues.push({
+          lineNum,
+          rule: "Rule 1.6 / Rule 6",
+          message: `Progressive '-ing' construction '${progressiveMatch[0]}' found. Progressive verbs are prohibited in STE; use simple present or past tense.`,
+          context: text,
+        });
+      }
+    }
+
     // Part 2: Recurring Errors Dictionary
     for (const [pattern, replacement] of Object.entries(RECURRING_ERRORS)) {
       const regex = new RegExp(pattern, "i");
-      const match = text.match(regex);
+      const match = cleanText.match(regex);
       if (match) {
         issues.push({
           lineNum,
@@ -471,8 +673,59 @@ export function lintSTE(content, isCodeFile = false) {
   return issues;
 }
 
+/**
+ * Automatically applies safe remediation fixes (contractions, Latin abbreviations, safe word replacements).
+ */
+export function autoFixContent(content) {
+  let fixed = content;
+  let fixCount = 0;
+
+  // Fix contractions
+  for (const [contraction, replacement] of Object.entries(CONTRACTION_REPLACEMENTS)) {
+    const regex = new RegExp(`\\b${contraction.replace("'", "['’]")}\\b`, "gi");
+    if (regex.test(fixed)) {
+      fixed = fixed.replace(regex, (match) => {
+        fixCount++;
+        // Maintain initial capitalization
+        if (match[0] === match[0].toUpperCase()) {
+          return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+        }
+        return replacement;
+      });
+    }
+  }
+
+  // Fix Latin abbreviations
+  for (const [latin, replacement] of Object.entries(LATIN_REPLACEMENTS)) {
+    const escaped = latin.replace(/\./g, "\\.");
+    const regex = new RegExp(`\\b${escaped}\\b`, "gi");
+    if (regex.test(fixed)) {
+      fixed = fixed.replace(regex, () => {
+        fixCount++;
+        return replacement;
+      });
+    }
+  }
+
+  // Fix safe unambiguous words
+  for (const [target, replacement] of Object.entries(SAFE_WORD_FIXES)) {
+    const regex = new RegExp(`\\b${target}\\b`, "g");
+    if (regex.test(fixed)) {
+      fixed = fixed.replace(regex, () => {
+        fixCount++;
+        return replacement;
+      });
+    }
+  }
+
+  return { fixed, fixCount };
+}
+
 const CODE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".mjs", ".cjs"]);
 const DOC_EXTENSIONS = new Set([".md", ".markdown"]);
+const IGNORED_DIRS = new Set([
+  "node_modules", "dist", "coverage", ".git", ".stubs", ".gemini"
+]);
 
 function collectFiles(targetPath, mode) {
   if (!fs.existsSync(targetPath)) return [];
@@ -492,12 +745,7 @@ function collectFiles(targetPath, mode) {
     const results = [];
     const entries = fs.readdirSync(targetPath, { withFileTypes: true });
     for (const entry of entries) {
-      if (
-        entry.name.startsWith(".") ||
-        entry.name === "node_modules" ||
-        entry.name === "dist" ||
-        entry.name === "coverage"
-      ) {
+      if (IGNORED_DIRS.has(entry.name)) {
         continue;
       }
       const full = path.join(targetPath, entry.name);
@@ -527,6 +775,7 @@ export function runCLI(argv) {
   const args = argv.slice(2);
   let textInput = null;
   let jsonOutput = false;
+  let fixMode = false;
   let mode = "docs";
   const paths = [];
 
@@ -536,6 +785,8 @@ export function runCLI(argv) {
       textInput = args[++i];
     } else if (arg === "--json") {
       jsonOutput = true;
+    } else if (arg === "--fix") {
+      fixMode = true;
     } else if (arg === "--code" || arg === "-c") {
       mode = "code";
     } else if (arg === "--all" || arg === "-a") {
@@ -543,17 +794,21 @@ export function runCLI(argv) {
     } else if (arg.startsWith("--mode=")) {
       mode = arg.split("=")[1];
     } else if (arg === "--help" || arg === "-h") {
-      console.log(`ASD-STE100 Issue 9 Linter (Node.js/JavaScript)
+      console.log(`ASD-STE100 Issue 9 Linter (TALE)
 
 Usage:
-  node ste-lint.mjs [options] [files/directories...]
+  node tale-lint.mjs [options] [files/directories...]
 
 Options:
   -t, --text <STRING>   Lint direct text string input
   -c, --code            Scan code comments in TypeScript/JavaScript files (.ts, .tsx, .js)
   -a, --all             Scan both documentation (.md) and code comments (.ts, .js)
+  --fix                 Automatically fix safe violations (contractions, Latin terms, ensure->make sure that)
   --json                Output results in JSON format
   -h, --help            Show this help message
+
+Default:
+  If no files or directories are provided, scans all Markdown files in the current repository.
 `);
       process.exit(0);
     } else {
@@ -565,6 +820,12 @@ Options:
   let totalViolations = 0;
 
   if (textInput !== null) {
+    if (fixMode) {
+      const { fixed, fixCount } = autoFixContent(textInput);
+      console.log(`Auto-fixed ${fixCount} item(s):\n${fixed}`);
+      process.exit(0);
+    }
+
     const isCode = textInput.startsWith("//") || textInput.startsWith("/*");
     const issues = lintSTE(textInput, isCode);
     totalViolations += issues.length;
@@ -586,9 +847,9 @@ Options:
     process.exit(totalViolations > 0 ? 1 : 0);
   }
 
+  // Default to scanning current repository if no paths provided
   if (paths.length === 0) {
-    console.error("Error: No files or directories provided to lint. Run with --help for usage.");
-    process.exit(1);
+    paths.push(".");
   }
 
   const targets = [];
@@ -597,13 +858,25 @@ Options:
   }
 
   if (targets.length === 0) {
-    console.error("No matching documentation or code files found.");
-    process.exit(1);
+    console.log("No matching documentation or code files found to lint.");
+    process.exit(0);
   }
+
+  let totalFixesApplied = 0;
 
   for (const target of targets) {
     try {
-      const content = fs.readFileSync(target.filePath, "utf-8");
+      let content = fs.readFileSync(target.filePath, "utf-8");
+
+      if (fixMode) {
+        const { fixed, fixCount } = autoFixContent(content);
+        if (fixCount > 0) {
+          fs.writeFileSync(target.filePath, fixed, "utf-8");
+          totalFixesApplied += fixCount;
+          content = fixed;
+        }
+      }
+
       const issues = lintSTE(content, target.isCode);
       totalViolations += issues.length;
       reports.push({ filePath: target.filePath, issues });
@@ -628,8 +901,11 @@ Options:
   if (jsonOutput) {
     console.log(JSON.stringify(reports, null, 2));
   } else {
+    if (fixMode) {
+      console.log(`\nAuto-remediation applied: ${totalFixesApplied} fix(es).`);
+    }
     if (totalViolations > 0) {
-      console.log(`\nTotal STE violations found: ${totalViolations}`);
+      console.log(`\nTotal STE violations remaining: ${totalViolations}`);
     } else {
       console.log("\nAll scanned files are compliant with ASD-STE100 Issue 9.");
     }
@@ -638,4 +914,7 @@ Options:
   process.exit(totalViolations > 0 ? 1 : 0);
 }
 
-runCLI(process.argv);
+// Top-level execution guard: only run CLI when executed directly
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  runCLI(process.argv);
+}

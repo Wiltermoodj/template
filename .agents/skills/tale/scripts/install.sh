@@ -69,6 +69,17 @@ if [[ -d "${SKILL_ROOT}/resources" ]]; then
   cp -R "${SKILL_ROOT}/resources" "${TARGET_DIR}/"
 fi
 
+# Install governance rule if available
+RULES_SRC="${SKILL_ROOT}/../../rules/agent-conciseness-and-tale.md"
+if [[ -f "${RULES_SRC}" ]]; then
+  if [[ "${TARGET_DIR}" == *"/skills/tale" ]]; then
+    RULES_TARGET="$(dirname "$(dirname "${TARGET_DIR}")")/rules"
+    mkdir -p "${RULES_TARGET}"
+    cp "${RULES_SRC}" "${RULES_TARGET}/"
+    echo "✓ Governance rule installed at: ${RULES_TARGET}/agent-conciseness-and-tale.md"
+  fi
+fi
+
 chmod +x "${TARGET_DIR}/scripts/tale-lint.mjs" "${TARGET_DIR}/scripts/tale-lint.ts" "${TARGET_DIR}/scripts/install.sh"
 
 echo "✓ ASD-STE100 skill installed successfully at: ${TARGET_DIR}"

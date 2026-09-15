@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "stubs": "github:Wiltermoodj/stubs"
+  },
+  "scripts": {
+    "lint:tale": "node .agents/skills/tale/scripts/tale-lint.mjs",
+    "lint:tale:code": "node .agents/skills/tale/scripts/tale-lint.mjs --code src/"
   }
 }

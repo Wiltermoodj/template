@@ -1,0 +1,10 @@
+{
+  "project_name": "template",
+  "version": "1.0.0",
+  "autonomy_level": "guided_execution",
+  "paths": {
+    "specs_dir": "src",
+    "templates_dir": ".stubs/templates",
+    "database_path": ".stubs/graph.sqlite"
+  }
+}

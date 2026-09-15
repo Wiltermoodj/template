@@ -5,14 +5,12 @@ Run this command from the root of any target repository:
 
 bash
 curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/template/main/.agents/skills/tale/scripts/install.sh | bash
-To install into a specific directory path or globally:
 
-bash
 
-# Target repository path
+Install stubs skill only:
 
-curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/template/main/.agents/skills/tale/scripts/install.sh | bash -s -- --project /path/to/target
+curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/stubs/main/bin/stubs.js -o /usr/local/bin/stubs && chmod +x /usr/local/bin/stubs
 
-# Global agent configuration (~/.gemini/config/skills/tale)
+Install Design:
 
-curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/template/main/.agents/skills/tale/scripts/install.sh | bash -s -- --global
+

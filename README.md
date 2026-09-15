@@ -13,4 +13,4 @@ curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/stubs/main/bin/stubs.js
 
 Install Design:
 
-
+curl -fsSL https://raw.githubusercontent.com/Wiltermoodj/design/main/scripts/install-design-skill.sh | bash

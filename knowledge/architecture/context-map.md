@@ -15,6 +15,4 @@ Describe the primary purpose and execution model of the application.
 
 ## Domain Index
 
-| Domain | Subsystem / Responsibility    | Context Map                                   |
-| :----- | :---------------------------- | :-------------------------------------------- |
-| Core   | Main entry points and routing | [Core Domain Map](domains/core-domain-map.md) |
+Core (Layer 0): [domains/core-domain-map.md] -> caps: primary entry points, routing

@@ -75,7 +75,7 @@ All agents must obey [.agents/rules/agent-conciseness-and-tale.md](file:///Users
 
 When your work is finished, you must do all verification checks before you submit changes.
 
-### Step 1: TypeScript Compiler Check
+### Step 1: TypeScript Compiler Check (Maximum Strictness)
 
 Run the TypeScript compiler to make sure that no type errors exist:
 
@@ -83,9 +83,11 @@ Run the TypeScript compiler to make sure that no type errors exist:
 npm run typecheck
 ```
 
-The compiler must exit with code 0.
+- The compiler must exit with code 0.
+- Maximum compiler strictness is mandatory (`strict: true`, `noImplicitAny: true`, `noImplicitThis: true`, `strictNullChecks: true`, `strictFunctionTypes: true`, `strictBindCallApply: true`, `strictPropertyInitialization: true`, `alwaysStrict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`, `noImplicitReturns: true`, `noFallthroughCasesInSwitch: true`, `noImplicitOverride: true`, `allowUnreachableCode: false`, `allowUnusedLabels: false`).
+- **Strict Prohibition:** Agents are strictly forbidden from modifying or relaxing `tsconfig.json` or bypassing checks (`// @ts-ignore`, `// @ts-nocheck`, `ignoreBuildErrors`).
 
-### Step 2: Linter and Formatter Checks
+### Step 2: Linter and Formatter Checks (Zero-Tolerance Rules)
 
 Run ESLint and Prettier to validate code quality and formatting:
 
@@ -93,6 +95,10 @@ Run ESLint and Prettier to validate code quality and formatting:
 npm run lint
 npm run format:check
 ```
+
+- ESLint enforces zero tolerance for explicit or implicit `any`, unsafe operations, and assertion bypasses.
+- **Strict Prohibition:** Agents are strictly forbidden from relaxing `eslint.config.*`, downgrading errors to warnings, or adding `/* eslint-disable */` / `// eslint-disable-next-line` comments.
+- Refer to the full specification in [.agents/rules/tsc-and-eslint-rules.md](file:///Users/lappier/code/projects/template/.agents/rules/tsc-and-eslint-rules.md).
 
 To fix automatic lint and formatting issues, run:
 

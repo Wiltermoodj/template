@@ -65,3 +65,15 @@ When authoring markdown files, ADRs, and commit messages:
 3. **No Semicolons or Contractions:** Always use periods (`.`) and full words (`do not`, `is not`).
 4. **Controlled Vocabulary:** Consult `.agents/skills/tale/SKILL.md` and replace non-STE terms.
 5. **Verification:** Run `npm run lint:tale` on modified markdown files before ending tasks.
+
+---
+
+## 5. Agent-First Architecture & Context Records (ADR-001)
+
+When authoring architecture records, context maps, or module sidecars:
+1. **No Decorative Syntax:** Prohibit emojis, Unicode icons, and ASCII art.
+2. **Compact Records:** Use single-line pipe-delimited records instead of Markdown tables.
+3. **Direct File Anchors:** Use single-occurrence path anchors (for example, `[src/auth.ts]`) without duplicate labels.
+4. **Decouple Visual Diagrams:** Place Mermaid diagrams in separate files (such as `visual-map.md`).
+5. **Strict Spacing:** Use two spaces for indentation and single blank lines between sections.
+

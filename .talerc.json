@@ -1,0 +1,19 @@
+{
+  "agentFirst": {
+    "patterns": [
+      "AGENTS.md",
+      "RULES.md",
+      "**/*context*",
+      "knowledge/architecture/**",
+      "**/*.spec.md"
+    ],
+    "exclude": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "CHANGELOG.md",
+      "LICENSE.md",
+      "**/visual-*",
+      "**/diagram*"
+    ]
+  }
+}

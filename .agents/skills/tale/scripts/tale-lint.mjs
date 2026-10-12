@@ -673,10 +673,213 @@ export function lintSTE(content, isCodeFile = false) {
   return issues;
 }
 
+export const DEFAULT_TALE_CONFIG = {
+  agentFirst: {
+    patterns: [
+      "AGENTS.md",
+      "RULES.md",
+      "**/*context*",
+      "knowledge/architecture/**",
+      "**/*.spec.md",
+    ],
+    exclude: [
+      "README.md",
+      "CONTRIBUTING.md",
+      "CHANGELOG.md",
+      "LICENSE.md",
+      "**/visual-*",
+      "**/diagram*",
+    ],
+  },
+};
+
+export function matchesGlobPattern(filePath, pattern) {
+  const normalizedPath = filePath.replace(/\\/g, "/");
+  const normalizedPattern = pattern.replace(/\\/g, "/");
+
+  let regexStr = normalizedPattern
+    .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*\*/g, "___GLOBSTAR___")
+    .replace(/\*/g, "[^/]*")
+    .replace(/___GLOBSTAR___/g, ".*")
+    .replace(/\?/g, ".");
+
+  if (!regexStr.startsWith(".*") && !regexStr.startsWith("/")) {
+    regexStr = `(?:^|.*/)${regexStr}`;
+  }
+  const regex = new RegExp(`^${regexStr}$`, "i");
+  return regex.test(normalizedPath);
+}
+
+export function loadTaleConfig(rootDir = process.cwd()) {
+  try {
+    const rcPath = path.join(rootDir, ".talerc.json");
+    if (fs.existsSync(rcPath)) {
+      const parsed = JSON.parse(fs.readFileSync(rcPath, "utf-8"));
+      return {
+        agentFirst: {
+          patterns: parsed.agentFirst?.patterns ?? DEFAULT_TALE_CONFIG.agentFirst.patterns,
+          exclude: parsed.agentFirst?.exclude ?? DEFAULT_TALE_CONFIG.agentFirst.exclude,
+        },
+      };
+    }
+
+    const pkgPath = path.join(rootDir, "package.json");
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+      if (pkg.tale?.agentFirst) {
+        return {
+          agentFirst: {
+            patterns: pkg.tale.agentFirst.patterns ?? DEFAULT_TALE_CONFIG.agentFirst.patterns,
+            exclude: pkg.tale.agentFirst.exclude ?? DEFAULT_TALE_CONFIG.agentFirst.exclude,
+          },
+        };
+      }
+    }
+  } catch {
+    // Fall back to default configuration on read or parse errors
+  }
+  return DEFAULT_TALE_CONFIG;
+}
+
+export function isAgentFirstFile(filePath, content = "", config = DEFAULT_TALE_CONFIG) {
+  const norm = filePath.replace(/\\/g, "/");
+
+  for (const ex of config.agentFirst?.exclude ?? []) {
+    if (matchesGlobPattern(norm, ex)) {
+      return false;
+    }
+  }
+
+  if (content && typeof content === "string") {
+    if (/^---\n[\s\S]*?(?:type:\s*["']?context-map["']?|agent_first:\s*true)[\s\S]*?\n---/.test(content)) {
+      return true;
+    }
+  }
+
+  for (const pattern of config.agentFirst?.patterns ?? []) {
+    if (matchesGlobPattern(norm, pattern)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function lintAgentFirst(content) {
+  const issues = [];
+  const lines = content.split("\n");
+
+  let inFrontmatter = false;
+  let frontmatterEndLine = 0;
+  if (lines.length > 0 && lines[0].trim() === "---") {
+    inFrontmatter = true;
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim() === "---") {
+        frontmatterEndLine = i + 1;
+        inFrontmatter = false;
+        break;
+      }
+    }
+  }
+
+  const EMOJI_REGEX = /[\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+  let consecutiveBlankLines = 0;
+  let inCodeFence = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineNum = i + 1;
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("```")) {
+      inCodeFence = !inCodeFence;
+      if (inCodeFence && trimmed.toLowerCase().startsWith("```mermaid")) {
+        issues.push({
+          lineNum,
+          rule: "ADR-001 Rule 7",
+          message: "Embedded Mermaid diagram detected. Decouple visual diagrams into separate files.",
+          context: line,
+        });
+      }
+      continue;
+    }
+
+    if (inCodeFence) {
+      continue;
+    }
+
+    if (lineNum <= frontmatterEndLine) {
+      continue;
+    }
+
+    if (trimmed === "") {
+      consecutiveBlankLines++;
+      if (consecutiveBlankLines > 1) {
+        issues.push({
+          lineNum,
+          rule: "ADR-001 Rule 5",
+          message: "Multiple consecutive blank lines detected. Use single line breaks between sections.",
+          context: "<blank line>",
+        });
+      }
+      continue;
+    } else {
+      consecutiveBlankLines = 0;
+    }
+
+    const globalEmojiRegex = new RegExp(EMOJI_REGEX.source, "gu");
+    let emojiMatch;
+    while ((emojiMatch = globalEmojiRegex.exec(line)) !== null) {
+      issues.push({
+        lineNum,
+        rule: "ADR-001 Rule 1",
+        message: `Multi-byte emoji or decorative symbol '${emojiMatch[0]}' detected. Prohibited in agent-first files.`,
+        context: line,
+      });
+    }
+
+    if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+      issues.push({
+        lineNum,
+        rule: "ADR-001 Rule 1",
+        message: "Decorative horizontal divider rule detected outside frontmatter header. Prohibited in agent-first files.",
+        context: line,
+      });
+    }
+
+    if (/^\|?\s*:?-+:?\s*(\|?\s*:?-+:?\s*)+\|?$/.test(trimmed)) {
+      issues.push({
+        lineNum,
+        rule: "ADR-001 Rule 2",
+        message: "Multi-column Markdown table detected. Use compact pipe-delimited records instead.",
+        context: line,
+      });
+    }
+
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let linkMatch;
+    while ((linkMatch = linkRegex.exec(line)) !== null) {
+      const label = linkMatch[1].trim();
+      const target = linkMatch[2].trim();
+      if (label !== target && !label.endsWith(target) && (target.includes("/") || target.includes("."))) {
+        issues.push({
+          lineNum,
+          rule: "ADR-001 Rule 3",
+          message: `Redundant link label '${linkMatch[0]}' detected. Use direct file anchor '[${target}]' or bare path.`,
+          context: line,
+        });
+      }
+    }
+  }
+
+  return issues;
+}
+
 /**
  * Automatically applies safe remediation fixes (contractions, Latin abbreviations, safe word replacements).
  */
-export function autoFixContent(content) {
+export function autoFixContent(content, isAgentFirst = false) {
   let fixed = content;
   let fixCount = 0;
 
@@ -716,6 +919,38 @@ export function autoFixContent(content) {
         return replacement;
       });
     }
+  }
+
+  if (isAgentFirst) {
+    // Strip multi-byte emojis
+    const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
+    if (emojiRegex.test(fixed)) {
+      fixed = fixed.replace(emojiRegex, () => {
+        fixCount++;
+        return "";
+      });
+    }
+
+    // Collapse consecutive blank lines
+    const multipleBlanks = /(\n[ \t]*){3,}/g;
+    if (multipleBlanks.test(fixed)) {
+      fixed = fixed.replace(multipleBlanks, () => {
+        fixCount++;
+        return "\n\n";
+      });
+    }
+
+    // Convert redundant links [Label](path/to/file) to [path/to/file]
+    const redundantLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    fixed = fixed.replace(redundantLinkRegex, (match, label, target) => {
+      const cleanLabel = label.trim();
+      const cleanTarget = target.trim();
+      if (cleanLabel !== cleanTarget && (cleanTarget.includes("/") || cleanTarget.includes("."))) {
+        fixCount++;
+        return `[${cleanTarget}]`;
+      }
+      return match;
+    });
   }
 
   return { fixed, fixCount };
@@ -777,6 +1012,7 @@ export function runCLI(argv) {
   let jsonOutput = false;
   let fixMode = false;
   let mode = "docs";
+  let forceAgentFirst = false;
   const paths = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -787,6 +1023,8 @@ export function runCLI(argv) {
       jsonOutput = true;
     } else if (arg === "--fix") {
       fixMode = true;
+    } else if (arg === "--agent-first") {
+      forceAgentFirst = true;
     } else if (arg === "--code" || arg === "-c") {
       mode = "code";
     } else if (arg === "--all" || arg === "-a") {
@@ -803,7 +1041,8 @@ Options:
   -t, --text <STRING>   Lint direct text string input
   -c, --code            Scan code comments in TypeScript/JavaScript files (.ts, .tsx, .js)
   -a, --all             Scan both documentation (.md) and code comments (.ts, .js)
-  --fix                 Automatically fix safe violations (contractions, Latin terms, ensure->make sure that)
+  --agent-first         Force ADR-001 Agent-First syntax checks (compact records, no emojis, no redundant links)
+  --fix                 Automatically fix safe violations (contractions, Latin terms, emojis, duplicate links)
   --json                Output results in JSON format
   -h, --help            Show this help message
 
@@ -816,18 +1055,23 @@ Default:
     }
   }
 
+  const taleConfig = loadTaleConfig();
   const reports = [];
   let totalViolations = 0;
 
   if (textInput !== null) {
     if (fixMode) {
-      const { fixed, fixCount } = autoFixContent(textInput);
+      const { fixed, fixCount } = autoFixContent(textInput, forceAgentFirst);
       console.log(`Auto-fixed ${fixCount} item(s):\n${fixed}`);
       process.exit(0);
     }
 
     const isCode = textInput.startsWith("//") || textInput.startsWith("/*");
     const issues = lintSTE(textInput, isCode);
+    if (!isCode && forceAgentFirst) {
+      issues.push(...lintAgentFirst(textInput));
+      issues.sort((a, b) => a.lineNum - b.lineNum);
+    }
     totalViolations += issues.length;
     reports.push({ filePath: "inline-text", issues });
 
@@ -837,7 +1081,7 @@ Default:
       if (issues.length === 0) {
         console.log("✓ Text is fully ASD-STE100 Issue 9 compliant.");
       } else {
-        console.log(`Found ${issues.length} STE violation(s):`);
+        console.log(`Found ${issues.length} violation(s):`);
         for (const issue of issues) {
           console.log(`  Line ${issue.lineNum} [${issue.rule}]: ${issue.message}`);
           console.log(`  -> "${issue.context}"`);
@@ -867,9 +1111,10 @@ Default:
   for (const target of targets) {
     try {
       let content = fs.readFileSync(target.filePath, "utf-8");
+      const isAgentFirst = !target.isCode && (forceAgentFirst || isAgentFirstFile(target.filePath, content, taleConfig));
 
       if (fixMode) {
-        const { fixed, fixCount } = autoFixContent(content);
+        const { fixed, fixCount } = autoFixContent(content, isAgentFirst);
         if (fixCount > 0) {
           fs.writeFileSync(target.filePath, fixed, "utf-8");
           totalFixesApplied += fixCount;
@@ -878,15 +1123,24 @@ Default:
       }
 
       const issues = lintSTE(content, target.isCode);
+      if (isAgentFirst) {
+        issues.push(...lintAgentFirst(content));
+        issues.sort((a, b) => a.lineNum - b.lineNum);
+      }
       totalViolations += issues.length;
       reports.push({ filePath: target.filePath, issues });
 
       if (!jsonOutput) {
-        console.log(`\nScanning: ${target.filePath} ${target.isCode ? "(Code Comments)" : "(Docs)"}`);
+        const typeLabel = target.isCode
+          ? "(Code Comments)"
+          : isAgentFirst
+            ? "(Docs - Agent-First Profile)"
+            : "(Docs)";
+        console.log(`\nScanning: ${target.filePath} ${typeLabel}`);
         if (issues.length === 0) {
           console.log("  ✓ Fully ASD-STE100 Issue 9 compliant.");
         } else {
-          console.log(`  Found ${issues.length} STE violation(s):`);
+          console.log(`  Found ${issues.length} violation(s):`);
           for (const issue of issues) {
             console.log(`    Line ${issue.lineNum} [${issue.rule}]: ${issue.message}`);
             console.log(`    -> "${issue.context}"`);
@@ -905,7 +1159,7 @@ Default:
       console.log(`\nAuto-remediation applied: ${totalFixesApplied} fix(es).`);
     }
     if (totalViolations > 0) {
-      console.log(`\nTotal STE violations remaining: ${totalViolations}`);
+      console.log(`\nTotal violations remaining: ${totalViolations}`);
     } else {
       console.log("\nAll scanned files are compliant with ASD-STE100 Issue 9.");
     }

@@ -42,6 +42,7 @@ When crafting text, consult these specialized sub-references:
 | **Punctuation & Word Counting** | [references/word_count_and_punctuation.md](references/word_count_and_punctuation.md) | Punctuation limits, units counting as 1 word |
 | **Transformation Recipes** | [references/transformation_guide.md](references/transformation_guide.md) | Before/after pairs for architecture docs, PRs, and notes |
 | **Code & Identifier Standards** | [references/code_and_identifier_standards.md](references/code_and_identifier_standards.md) | Identifier names, <=3-word noun clusters, TSDoc comments |
+| **Agent-First Profile (ADR-001)** | [references/agent_first_representation.md](references/agent_first_representation.md) | Token-optimal syntax for context maps, records, and sidecars |
 
 ---
 
@@ -139,4 +140,16 @@ When authoring code:
 1. **Action-First Functions:** Start function names with an approved action verb (for example, `calculateTotal()`, `validateInput()`).
 2. **Noun Cluster Cap:** Identifiers and variables must not exceed three words.
 3. **Comments in Simple Present Tense:** Write comments in active voice stating *why* code exists. Prohibit semicolons and contractions in comments.
+
+---
+
+## 9. Agent-First Profile & Token Optimization (ADR-001)
+
+When authoring architecture records, context maps, and module sidecars:
+1. **No Decorative Elements:** Prohibit emojis, Unicode symbols, and ASCII art.
+2. **Compact Records:** Use single-line pipe-delimited records instead of multi-column Markdown tables.
+3. **Single-Occurrence Links:** Use direct path anchors (for example, `[src/auth.ts]`) without duplicate labels.
+4. **Strict STE Primacy:** Keep sentences short, active, and fully compliant with ASD-STE100 rules.
+5. **Indentation and Spacing:** Use two spaces for indentation and single blank lines between sections.
+6. **Decouple Visual Artifacts:** Place Mermaid diagrams in separate files (for example, `visual-map.md`).
 

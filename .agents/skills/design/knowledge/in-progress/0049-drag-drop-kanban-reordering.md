@@ -15,7 +15,7 @@ date: "2026-08-20"
 
 ## Context
 
-Interactive boards (e.g. Deals pipeline stages, task lists, column reordering) rely heavily on drag-and-drop (DnD) interactions.
+Interactive boards (for example, Deals pipeline stages, task lists, column reordering) rely heavily on drag-and-drop (DnD) interactions.
 
 Without clear guidelines:
 1. Dragged elements lack consistent elevation or tilt feedback.
@@ -44,7 +44,7 @@ Without clear guidelines:
 - **Resting Affordance:** Draggable cards/rows must show a drag handle icon (`GripVertical className="text-muted-foreground/40 hover:text-foreground cursor-grab"`).
 - **Active Drag State:**
   - Elevation: Rises to `shadow-xl` and scale `scale-[1.02]`.
-  - Subtle Tilt: `rotate-[1.5deg]` to communicate physical detachment.
+  - Subtle Tilt: `turn-[1.5deg]` to communicate physical detachment.
   - Ghost Slot: The origin slot displays a dashed neutral border (`border-2 border-dashed border-border/60 bg-muted/20`).
 - **Drop Target / Insertion Line:**
   - Highlight the exact insertion position with a `h-1 bg-primary rounded-full` indicator bar.
@@ -73,7 +73,7 @@ Every draggable item must support keyboard-driven movement:
 
 ## Anti-Patterns & Prohibitions
 
-1. **No Drag-Only Interfaces:** An interface must never require drag-and-drop as the sole way to accomplish a task. Always provide a fallback (e.g. a "Move to..." menu option in the row/card overflow trigger).
+1. **No Drag-Only Interfaces:** An interface must never require drag-and-drop as the sole way to accomplish a task. Always provide a fallback (for example, a "Move to..." menu option in the row/card overflow trigger).
 2. **No Layout Jumps on Drop:** Transition cards into their new position with a quick 150ms `ease-out` translation.
 3. **No Unbounded Dropzones:** Drop targets must have distinct visual boundaries.
 
@@ -81,5 +81,5 @@ Every draggable item must support keyboard-driven movement:
 
 ## Open Questions for Discussion
 
-- Should drag handles be visible at all times or appear only on hover/focus?
-- On touch devices, should drag-and-drop require a long-press (e.g. 250ms) to distinguish dragging from scrolling?
+- Must drag handles be visible at all times or appear only on hover/focus?
+- On touch devices, must drag-and-drop require a long-press (for example, 250ms) to distinguish dragging from scrolling?

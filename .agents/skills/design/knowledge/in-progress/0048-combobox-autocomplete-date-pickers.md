@@ -15,7 +15,7 @@ date: "2026-08-20"
 
 ## Context
 
-Forms and search interfaces depend on advanced selection primitives to handle large datasets (e.g. searching 50,000 customers or selecting date ranges across fiscal years).
+Forms and search interfaces depend on advanced selection primitives to handle large datasets (for example, searching 50,000 customers or selecting date ranges across fiscal years).
 
 Currently:
 1. Autocomplete components lack standard debouncing and loading feedback, resulting in erratic race conditions.
@@ -79,19 +79,19 @@ Currently:
   - Start Date & End Date: `bg-primary text-primary-foreground font-semibold rounded-full`.
   - In-Between Range: `bg-primary/10 text-foreground rounded-none`.
 - **Display Input Format:** Must strictly follow ADR 0030: `"Aug 1, 2026 — Aug 31, 2026"`.
-- **Timezone Transparency:** When time selection is enabled, display timezone badge (e.g. `PDT (UTC-7)`) next to the time input.
+- **Timezone Transparency:** When time selection is enabled, display timezone badge (for example, `PDT (UTC-7)`) next to the time input.
 
 ---
 
 ## Anti-Patterns & Prohibitions
 
-1. **No Raw HTML `<select>` for > 15 Options:** Standard `<select>` elements become unusable for large datasets; use `<Combobox>` with virtualized scrolling instead.
+1. **No Raw HTML `<select>` for > 15 Options:** Standard `<select>` elements become unusable for large datasets. Use `<Combobox>` with virtualized scrolling instead.
 2. **No Layout Shifts During Async Search:** Keep dropdown menu height stable while search results are pending.
-3. **No Ambiguous Date Formats:** Never display numeric-only dates like `08/09/2026` (which causes month/day confusion in international contexts); use formatted short month names (`Aug 9, 2026`).
+3. **No Ambiguous Date Formats:** Never display numeric-only dates like `08/09/2026` (which causes month/day confusion in international contexts). Use formatted short month names (`Aug 9, 2026`).
 
 ---
 
 ## Open Questions for Discussion
 
-- Should single date pickers use inline calendar popovers or a native mobile wheel picker on touch devices?
-- Should custom date range presets be persistable per user in localStorage?
+- Must single date pickers use inline calendar popovers or a native mobile wheel picker on touch devices?
+- Must custom date range presets be persistable per user in localStorage?

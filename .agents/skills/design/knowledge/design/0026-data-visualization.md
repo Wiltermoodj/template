@@ -8,7 +8,7 @@ last_updated: "2026-07-18T18:35:00Z"
 # 0026 - Data Visualization Standards
 
 ## Context
-Charts without labeled axes, insufficient color contrast, or missing tabular alternatives inaccessible and misleading. Chart tooltips obscure data points or charts don't reflow on mobile viewports degrade analytical experience.
+Charts without labeled axes, insufficient color contrast, or missing tabular alternatives inaccessible and misleading. Chart tooltips obscure data points or charts do not reflow on mobile viewports degrade analytical experience.
 
 ## Decision
 

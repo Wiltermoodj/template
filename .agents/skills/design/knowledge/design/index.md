@@ -8,7 +8,7 @@ last_updated: "2026-08-08T06:15:00Z"
 
 # Design Principles
 
-Architectural Decision Records governing visual design, interaction patterns, and UI/UX standards for any UI project. All design ADRs are **Accepted** and enforced by the `design-guidelines` agent skill.
+Architectural Decision Records governing visual design, interaction patterns, and UI/UX standards for each UI project. All design ADRs are **Accepted** and enforced by the `design-guidelines` agent skill.
 
 > **Agent note:** Read `SKILL.md` for the compiled enforcement checklist. Read individual ADRs for full rationale and detailed rules.
 
@@ -30,7 +30,6 @@ Architectural Decision Records governing visual design, interaction patterns, an
 - [0022 - Animations, Motion & Transition Standards](0022-animations-microinteractions.md) — No linear easing, 200–500ms budget, tooltip delay tiers, async state visuals (skeleton-first), route transitions, section mounts, stagger, forbidden patterns
 - [0044 - Dynamic Scrollbar Auto-Hide Standards](0044-scrollbar-auto-hide-standards.md) — Scrollbars hidden at rest, visible only on active scroll, 300ms idle persistence before 150ms fade out, zero-width overlay layout contract
 
-
 ## Layout & Navigation
 
 - [0024 - Responsive & Adaptive Layout](0024-responsive-layout.md) — Desktop >1024px, tablet 768–1024px, mobile <768px card transformation
@@ -43,11 +42,11 @@ Architectural Decision Records governing visual design, interaction patterns, an
 ## Components
 
 - [0029 - Button Hierarchy & States](0029-button-hierarchy-states.md) — Variant decision rule, text-slide exception, loading state, keyboard focus
-- [0043 - Button Text vs Icon Rules](0043-button-text-vs-icon-rules.md) — Surface presence principle, text pairing taxonomy, Primary CTA criteria, step-by-step heuristic
-- [0032 - Modal & Dialog Standards](0032-modal-dialog-standards.md) — AlertDialog vs Dialog vs Sheet, size tiers, header/footer anatomy, nesting ban
-- [0033 - Toast & Notification Rules](0033-toast-notification-rules.md) — Auto-dismiss durations, undo toast, max 3 concurrent, toast vs. bell boundary
+- [0043 - Button Text against Icon Rules](0043-button-text-against-icon-rules.md) — Surface presence principle, text pairing taxonomy, Primary CTA criteria, step-by-step heuristic
+- [0032 - Modal & Dialog Standards](0032-modal-dialog-standards.md) — AlertDialog against Dialog against Sheet, size tiers, header/footer anatomy, nesting ban
+- [0033 - Toast & Notification Rules](0033-toast-notification-rules.md) — Auto-dismiss durations, undo toast, max 3 concurrent, toast against. bell boundary
 - [0034 - Table Design Standards](0034-table-design-standards.md) — Structural cleanliness (no badges/grid lines), Sub-label Stacking/Margin Wash Variant patterns, numeric right-alignment, density toggle
-- [0035 - System Ban on Badges & Categorical Status Hierarchy](0035-badge-status-indicators.md) — Total deprecation of `badge.tsx`, pills, dots; Sub-label Stacking/Margin Wash Variant replacements
+- [0035 - System Ban on Badges & Categorical Status Hierarchy](0035-badge-status-indicators.md) — Total deprecation of `badge.tsx`, pills, dots. Sub-label Stacking/Margin Wash Variant replacements
 - [0036 - Semantic Color at Rest & Destructive Action Confirmation](0036-destructive-action-confirmation.md) — Zero semantic color on resting surfaces, menu-gated entry points, AlertDialog anatomy
 
 ## Forms & Data
@@ -69,8 +68,8 @@ Architectural Decision Records governing visual design, interaction patterns, an
 
 ## Cross-References to Architecture ADRs
 
-- [ADR 0011 — Optimistic UI Merging](../architecture/adr/0011-optimistic-ui-merging.md) — data-layer merge strategy; ADR 0022 governs the visual layer
-- [ADR 0012 — Human-in-the-Loop AI](../architecture/adr/0012-human-in-the-loop-ai-enrichment.md) — ReviewQueue; referenced by ADR 0022
+- [ADR 0011 — Optimistic UI Merging](../architecture/adr/0011-optimistic-ui-merging.md) — data-layer merge strategy. ADR 0022 governs the visual layer
+- [ADR 0012 — Human-in-the-Loop AI](../architecture/adr/0012-human-in-the-loop-ai-enrichment.md) — ReviewQueue. Referenced by ADR 0022
 
 ---
 

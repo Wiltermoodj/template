@@ -42,30 +42,30 @@ When transforming text or generating a technical response, execute this 3-step l
 
 ### Example 1: Architecture Specification / ADR
 - **Non-STE Input:**
-  > "The cache subsystem is utilized to store volatile transaction records; however, it shouldn't be relied upon for persistent persistence since power failure may cause data loss." *(26 words, semicolon, contraction, passive voice, unapproved words: *utilized*, *relied upon*, *since*, *may*)*
+  > "The cache subsystem is used to store volatile transaction records. However, it must not be relied upon for persistent persistence since power failure can cause data loss." *(26 words, semicolon, contraction, passive voice, unapproved words: *used*, *relied upon*, *since*, *can*)*
 - **ASD-STE100 Issue 9 Revision:**
-  > "The system uses the cache subsystem to store transaction records. But you must not use the cache subsystem for persistent data storage. A power failure can cause data loss." *(28 words total across 3 sentences; longest sentence = 10 words; active voice; approved vocabulary)*
+  > "The system uses the cache subsystem to store transaction records. But you must not use the cache subsystem for persistent data storage. A power failure can cause data loss." *(28 words total across 3 sentences. Longest sentence = 10 words. Active voice. Approved vocabulary)*
 
 ### Example 2: Procedural Deployment / Migration Step
 - **Non-STE Input:**
-  > "Run the database migration script while ensuring that the replica instances aren't actively processing read requests to avoid locking issues." *(20 words, progressive "-ing" verbs, contraction, unapproved words: *run*, *ensuring*, *avoid*)*
+  > "Run the database migration script while making sure that that the replica instances are not actively processing read requests to prevent locking issues." *(20 words, progressive "-ing" verbs, contraction, unapproved words: *run*, *making sure that*, *prevent*)*
 - **ASD-STE100 Issue 9 Revision:**
   > "1. Make sure that replica instances do not process read requests.
   > 2. Do the database migration script.
-  > 
-  > This prevents database locking problems." *(20 words total across 2 steps + 1 note; imperative mood; conditions first)*
+  >
+  > This prevents database locking problems." *(20 words total across 2 steps + 1 note. Imperative mood. Conditions first)*
 
 ### Example 3: Agent Code Review / Bug Report
 - **Non-STE Input:**
-  > "Testing the module showed that it's failing because of unhandled null pointer exceptions occurring when the user's auth token is missing." *(21 words, nominalization, contraction, progressive verbs, unapproved words: *testing*, *it's*, *occurring*)*
+  > "Testing the module showed that it is failing because of unhandled null pointer exceptions occurring when the user's auth token is absent." *(21 words, nominalization, contraction, progressive verbs, unapproved words: *testing*, *it is*, *occurring*)*
 - **ASD-STE100 Issue 9 Revision:**
-  > "The module test failed because of a null pointer exception. This error occurs when the user authentication token is not present." *(20 words across 2 sentences; active voice; no contractions; approved terms)*
+  > "The module test failed because of a null pointer exception. This error occurs when the user authentication token is not present." *(20 words across 2 sentences. Active voice. No contractions. Approved terms)*
 
 ### Example 4: Safety & Fault Warnings
 - **Non-STE Input:**
-  > "Caution: Don't forget to backup the ledger database before executing this destructive schema change or you'll lose customer balances." *(19 words, informal tone, contraction, vague directive)*
+  > "Caution: Do not forget to backup the ledger database before executing this destructive schema change or you will lose customer balances." *(19 words, informal tone, contraction, vague directive)*
 - **ASD-STE100 Issue 9 Revision:**
-  > "CAUTION: Make a backup of the ledger database before you do this schema change. If you do not make a backup, you can lose customer balance data." *(26 words across 2 sentences; explicit consequence; clear risk boundary)*
+  > "CAUTION: Make a backup of the ledger database before you do this schema change. If you do not make a backup, you can lose customer balance data." *(26 words across 2 sentences. Explicit consequence. Clear risk boundary)*
 
 ---
 
@@ -75,11 +75,11 @@ When transforming text or generating a technical response, execute this 3-step l
 
 Before printing responses or saving documentation, verify:
 - [ ] Are there semicolons (`;`)? $\rightarrow$ **Split them.**
-- [ ] Are there contractions (`don't`, `can't`, `it's`)? $\rightarrow$ **Expand them.**
+- [ ] Are there contractions (`do not`, `cannot`, `it is`)? $\rightarrow$ **Expand them.**
 - [ ] Are there progressive "-ing" verbs (`is writing`, `are processing`)? $\rightarrow$ **Use simple present/past.**
 - [ ] Are actions hidden in nouns (`do the execution of`)? $\rightarrow$ **Use direct verbs (`execute`, `do`).**
 - [ ] Are instructions written in passive voice? $\rightarrow$ **Use imperative commands.**
-- [ ] Did you use Latin abbreviations (`e.g.`, `i.e.`, `etc.`)? $\rightarrow$ **Replace with English words.**
+- [ ] Did you use Latin abbreviations (`for example, `, `that is, `, `and so on.`)? $\rightarrow$ **Replace with English words.**
 - [ ] Are all sentences within limits (<=20 words for instructions, <=25 words for descriptions)?
 - [ ] Are paragraphs longer than 6 sentences? $\rightarrow$ **Divide them.**
 
@@ -90,7 +90,7 @@ Before printing responses or saving documentation, verify:
 ### 4.1 Git Commit Messages
 All git commit messages must be written in the **Imperative Mood** using approved ASD-STE100 vocabulary and sentence length rules:
 - **Title Line:** Imperative command, maximum 50 characters, no period, no contractions.
-  - *Non-STE:* `Fixing the register bug and ensuring items won't desync`
+  - *Non-STE:* `Fixing the register bug and making sure that items will not desync`
   - *STE:* `Fix register desync bug and store amount in cents`
 - **Body:** Active voice, max 25 words per sentence, no semicolons.
   - *Example:*
@@ -107,5 +107,5 @@ Comments and function docstrings must describe behavior using **Simple Present T
   - *Non-STE:* `/** Helper for executing the tender process and checking if drawer opens */`
   - *STE:* `/** Calculates the change and opens the cash drawer for cash transactions. */`
 - **Inline Comments:**
-  - *Non-STE:* `// Checking if balance is below 0; if so, we're returning an error`
+  - *Non-STE:* `// Checking if balance is below 0; if so, we are returning an error`
   - *STE:* `// Return an error if the balance is less than 0.`

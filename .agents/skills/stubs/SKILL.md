@@ -5,21 +5,19 @@ description: Architecture-as-code planning & multi-language sidecar framework. S
 
 # stubs — Architecture Planning & Multi-Language Sidecar Skill
 
-`stubs` is an AI agent skill for repository architecture planning and deterministic software engineering. It enables agents to create rich **concept/architecture markdown documents** (`*.md`) as the primary artifact format for domain models, decisions, and system designs, with opt-in **code sidecars** (`*.<ext>.md`, e.g. `service.py.md`, `handler.go.md`, `schema.ts.md`) for modules that will be materialized into executable code.
+`stubs` is an AI agent skill for repository architecture planning and deterministic software engineering. It enables agents to create rich **concept/architecture markdown documents** (`*.md`). Users can add opt-in **code sidecars** (`*.<ext>.md`) for modules materialized into executable code.
 
 ## Primary Workflows
 
 1. **Architecture & Concept Planning (Default):**
    Create standard Markdown files (`*.md`) with OKF frontmatter (`type: concept-doc` or `architecture-doc`) without `target_code_file`. These capture requirements, ADRs, interface contracts, and systems architecture without ever generating code.
 
-2. **Code Sidecars & Materialization (Opt-in):**
-   When specifying a module to be implemented in code, name the sidecar with the target extension followed by `.md` (e.g. `auth.ts.md`, `crawler.py.md`, `server.go.md`) and define `target_code_file: ./crawler.py`. The materializer and sanding engine extract code blocks and synchronize bi-directional changes.
-
----
+2. **Code Sidecars (Opt-in):**
+   Name the sidecar with the target extension and `.md` (for example, `auth.ts.md`). Define `target_code_file`.
 
 ## Invocation Rules & CLI Entry Point
 
-When operating within a project, invoke the `stubs` CLI directly via:
+When operating within a project, invoke the `stubs` CLI directly through:
 
 ```bash
 npx stubs <command> [options]
@@ -31,31 +29,37 @@ node .agents/skills/stubs/dist/cli.cjs <command> [options]
 
 ### Dynamic Workspace Root & Graph State Rules
 - All runtime state (database `.stubs/graph.sqlite`, workspace configuration `.stubs/config.json`, and template molds `.stubs/templates`) resolves relative to the host project's **current working directory (`process.cwd()`)**.
-- **Automated Graph Synchronization:** Agents should run `npx stubs scan` (or `npx stubs scan <dir>`) after creating, refactoring, or deleting code files and sidecar specs to keep `.stubs/graph.sqlite` up to date.
+- **Automated Graph Synchronization:** Agents must run `stubs scan` after modifying code files or sidecars to keep `graph.sqlite` updated.
 - Never resolve runtime state relative to the `.agents/skills/stubs/dist/` bundle directory.
-
----
 
 ## Sub-Skills Directory
 
 The `stubs` skill delegates to modular sub-skills located under `.agents/skills/stubs/sub-skills/`:
 
-1. **[Conceptualizing](./sub-skills/conceptualizing/SKILL.md):** Conceptualize domain models, problem framing, initiative task trackers, and planned filetree blueprints.
-2. **[Context Mapping](./sub-skills/context-mapping/SKILL.md):** Build, maintain, and audit hierarchical architectural context maps (`knowledge/architecture/context-map.md` and domain maps).
-3. **[Context & Intelligence](./sub-skills/context/SKILL.md):** Extract token-optimized, tiered context briefings and blast-radius impact analysis for AI agents.
-4. **[Grilling](./sub-skills/grilling/SKILL.md):** Stress-test software designs using frontier-based dependency tree rounds.
-5. **[Sanding](./sub-skills/sanding/SKILL.md):** Reconcile code-to-spec or spec-to-code drift using AST structural hashes and bi-directional synchronization.
-6. **[Materialization](./sub-skills/materialization/SKILL.md):** Extract implementation blocks from sidecar specs into runnable code files (.ts, .py, .go, etc.).
-7. **[Auditing](./sub-skills/auditing/SKILL.md):** Perform static analysis, health checks, and graph validation across the workspace.
-8. **[Architectural Linting](./sub-skills/lint/SKILL.md):** Validate downward layer hierarchy, cycle bans, and manifest parity in CI.
-9. **[Test & Mock Scaffolding](./sub-skills/mock/SKILL.md):** Synthesize unit test suites and typed mocks directly from sidecar specs and AST signatures.
-10. **[Mermaid Diagrams & Visualization](./sub-skills/diagram/SKILL.md):** Generate living Mermaid architecture and sequence diagrams directly from the dependency graph.
-11. **[Dead Code & Orphan Pruning](./sub-skills/pruning/SKILL.md):** Audit and clean up phantom specs, untracked code files, and stale database records.
-12. **[Semantic Architectural Changelog](./sub-skills/changelog/SKILL.md):** Synthesize semantic architectural changelogs, ADR evolution logs, and contract drift reports from git history.
-
----
+1. **[./sub-skills/conceptualizing/SKILL.md]:** Conceptualize domain models, problem framing, initiative task trackers, and planned filetree blueprints.
+2. **[./sub-skills/context-mapping/SKILL.md]:** Build, maintain, and audit hierarchical architectural context maps (`knowledge/architecture/context-map.md` and domain maps).
+3. **[./sub-skills/context/SKILL.md]:** Extract token-optimized, tiered context briefings and blast-radius impact analysis for AI agents.
+4. **[./sub-skills/grilling/SKILL.md]:** Stress-test software designs using frontier-based dependency tree rounds.
+5. **[./sub-skills/sanding/SKILL.md]:** Reconcile code-to-spec or spec-to-code drift using AST structural hashes and bi-directional synchronization.
+6. **[./sub-skills/materialization/SKILL.md]:** Extract implementation blocks from sidecar specs into runnable code files (.ts, .py, .go, and so on.).
+7. **[./sub-skills/auditing/SKILL.md]:** Do static analysis, health checks, and graph validation across the workspace.
+8. **[./sub-skills/lint/SKILL.md]:** Validate downward layer hierarchy, cycle bans, and manifest parity in CI.
+9. **[./sub-skills/mock/SKILL.md]:** Synthesize unit test suites and typed mocks directly from sidecar specs and AST signatures.
+10. **[./sub-skills/diagram/SKILL.md]:** Generate living Mermaid architecture and sequence diagrams directly from the dependency graph.
+11. **[./sub-skills/pruning/SKILL.md]:** Audit and clean up phantom specs, untracked code files, and stale database records.
+12. **[./sub-skills/changelog/SKILL.md]:** Synthesize semantic architectural changelogs, ADR evolution logs, and contract drift reports from git history.
 
 ## Core Commands Reference
+
+### 0. `stubs run` / `stubs check`
+Consolidated primary command. Executes completed repository health and sync pipeline in a single pass: AST code scan, domain and context map generation, sidecar bi-directional sanding, architectural linting, and ASD-STE100 TALE governance.
+```bash
+npx stubs run
+npx stubs run --check
+npx stubs run --json
+```
+- `--check`: Run in read-only audit mode without applying auto-remediations.
+- `--json`: Emit structured JSON health scorecard.
 
 ### 1. `stubs init`
 Initializes standard workspace configuration `.stubs/config.json` in the current project directory.
@@ -115,7 +119,7 @@ npx stubs grill src/service.md --non-interactive
 - `--non-interactive`: Automates response generation for non-interactive agent execution.
 
 ### 8. `stubs materialize <file.md>`
-Parses an executable sidecar specification, extracts embedded code blocks (TS, Python, Go, Rust, etc.), and writes executable code to the target code file.
+Parses an executable sidecar specification, extracts embedded code blocks (TS, Python, Go, Rust, and so on.), and writes executable code to the target code file.
 ```bash
 npx stubs materialize src/service.py.md
 ```
@@ -196,20 +200,45 @@ npx stubs serve --port 3000
 ```
 
 ### 19. `stubs explain <target>`
-Inspects an entity or symbol's architectural profile, incoming/outgoing callers with confidence levels, degree centrality, downstream impact radius, and detected subsystem community.
+Inspects an entity or symbol's architectural profile, incoming/outgoing callers with confidence levels, degree centrality, downstream impact radius, and detected subsystem community. (Legacy alias for `stubs query "explain: <target>"`).
 ```bash
 npx stubs explain QueryEngine
 npx stubs explain src/parser/okf.ts --json
 ```
 
-### 20. `stubs query "<question or concept>"`
-GraphRAG context retrieval: executes multi-hop BFS/DFS subgraph traversal from matched seed nodes and packs relevant architectural signatures, relations, and ADRs within a strict token budget.
+### 20. `stubs query "<question, concept, or surgical prefix>"`
+Unified query and GraphRAG retrieval: executes multi-hop traversal within a token budget, or runs targeted operations through prefix syntax:
+- **Explain Symbol:** `npx stubs query "explain: <target>"`
+- **Shortest Path:** `npx stubs query "path: <source> to <target>"`
+- **Blast Radius:** `npx stubs query "blast: <target>"`
+- **GraphRAG Context:** `npx stubs query "<question or concept>"`
 ```bash
+# Surgical Queries (saves tool calls and tokens):
+npx stubs query "explain: QueryEngine"
+npx stubs query "path: GraphEngine to CliRouter"
+npx stubs query "blast: src/graph/engine.ts"
+
+# GraphRAG Context Retrieval:
 npx stubs query "How does the MCP server work?" --budget 1500
 npx stubs query "Parser AST extraction" --dfs --json
 ```
 
-### 21. `stubs export <obsidian|wiki>`
+### 21. `stubs pre-flight <target>`
+Pre-execution safety gate that combines blast radius guard, tiered agent context, topological edit order, and autonomy evaluation into a single CLI check. Use this before making code changes to verify the target is safe to modify under the current autonomy level.
+```bash
+npx stubs pre-flight src/service.ts
+npx stubs pre-flight src/service.ts --guard critical --depth 3
+npx stubs pre-flight src/service.ts --context --json
+npx stubs pre-flight src/service.ts --order src/a.ts src/b.ts
+```
+- `--guard <low|medium|high|critical>`: Blast radius safety threshold (default: high)
+- `--depth <N>`: Blast traversal depth (default: 3)
+- `--context`: Include L0/L1/L2 tiered agent context summary
+- `--order <files...>`: Compute topological edit order for listed files (dependencies first)
+- `--json`: Output structured JSON results
+- Exit codes: 0 = all safe, 1 = error, 2 = guard or autonomy check blocked
+
+### 22. `stubs export <obsidian|wiki>`
 Exports the entire codebase architecture graph into an interconnected Obsidian Vault (`[[wikilinks]]`) or Wikipedia-style modular markdown documentation with community hub maps.
 ```bash
 npx stubs export obsidian --out ./vault
@@ -217,7 +246,7 @@ npx stubs export wiki --out ./wiki
 ```
 
 ### 22. `stubs mcp`
-Starts a native Model Context Protocol (MCP) JSON-RPC 2.0 stdio server, exposing `stubs_query`, `stubs_explain`, `stubs_blast`, `stubs_path`, and `stubs_communities` to AI agents and IDEs.
+Starts a native Model Context Protocol (MCP) JSON-RPC 2.0 stdio server, exposing `stubs_query` (with unified surgical prefixes `explain:`, `path:`, `blast:`), `stubs_explain`, `stubs_blast`, `stubs_path`, and `stubs_communities` to AI agents and IDEs.
 ```bash
 npx stubs mcp
 ```

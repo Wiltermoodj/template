@@ -46,7 +46,7 @@ Currently:
 
 ### 2 — Optimistic Mutation Visual Cues
 
-- **Pending Offline Items:** In lists, cards, or tables, items modified while offline should display a subtle sync icon:
+- **Pending Offline Items:** In lists, cards, or tables, items modified while offline must display a subtle sync icon:
   `<Clock className="w-3.5 h-3.5 text-muted-foreground/60" aria-label="Pending sync" />`.
 - **Sync Failure:** If a background sync fails permanently:
   - Provide an inline error badge/indicator with a `[Review]` or `[Retry]` action.
@@ -87,12 +87,12 @@ When a user submits a change to a record that was modified remotely by another u
 ## Anti-Patterns & Prohibitions
 
 1. **No Silent Data Overwriting:** Never overwrite remote changes without notifying the user if the underlying version timestamp does not match.
-2. **No Persistent Blocking Alerts:** Do not freeze the entire UI with blocking modal dialogs during temporary network blips; allow cached reads and queue writes.
-3. **No Uninformative Error Messages:** Never display `"Network Error"`; specify `"Offline — your edits are saved locally and will sync when reconnected"`.
+2. **No Persistent Blocking Alerts:** Do not freeze the entire UI with blocking modal dialogs during temporary network blips. Allow cached reads and queue writes.
+3. **No Uninformative Error Messages:** Never display `"Network Error"`. Specify `"Offline — your edits are saved locally and will sync when reconnected"`.
 
 ---
 
 ## Open Questions for Discussion
 
-- Should field-level 3-way merging (accepting some local fields and some remote fields) be supported in the resolution modal?
-- Should offline caching use IndexedDB automatically for all table entity stores?
+- Must field-level 3-way merging (accepting some local fields and some remote fields) be supported in the resolution modal?
+- Must offline caching use IndexedDB automatically for all table entity stores?

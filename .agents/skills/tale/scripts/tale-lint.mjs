@@ -201,7 +201,7 @@ const NOUN_ING_EXCEPTIONS = new Set([
 /**
  * Calculates sentence word count obeying ASD-STE100 Section 8:
  * - Parentheses count as 1 word in the parent sentence.
- * - Numbers with units (e.g. '10 mA', '500 ms', '$100.00') count as 1 word.
+ * - Numbers with units (for example, '10 mA', '500 ms', '$100.00') count as 1 word.
  * - Quoted text counts as 1 word.
  * - Hyphenated words count as 1 word.
  */
@@ -460,7 +460,7 @@ export function extractCodeComments(content) {
       continue;
     }
 
-    // Inspect line state char-by-char to avoid detecting '//' or '/*' inside quotes
+    // Inspect line state char-by-char to prevent detecting '//' or '/*' inside quotes
     let inQuote = null;
     let commentStartIdx = -1;
     let isBlockStart = false;

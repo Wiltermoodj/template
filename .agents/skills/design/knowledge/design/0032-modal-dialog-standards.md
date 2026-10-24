@@ -8,7 +8,7 @@ last_updated: "2026-07-29T15:30:00Z"
 # 0032 - Modal & Dialog Standards
 
 ## Context
-Three dialog-type components exist (`dialog.tsx`, `alert-dialog.tsx`, `sheet.tsx`) with z-index and backdrop governed by [ADR 0041](0041-surface-tier-system.md), but no rule determines which to use when, what size a dialog should be, or what anatomy the header/footer must follow. This produces inconsistent modal experiences across the application.
+Three dialog-type components exist (`dialog.tsx`, `alert-dialog.tsx`, `sheet.tsx`) with z-index and backdrop governed by [ADR 0041](0041-surface-tier-system.md), but no rule determines which to use when, what size a dialog must be, or what anatomy the header/footer must follow. This produces inconsistent modal experiences across the application.
 
 ## Decision
 
@@ -16,10 +16,10 @@ Three dialog-type components exist (`dialog.tsx`, `alert-dialog.tsx`, `sheet.tsx
 
 | Situation | Component | Rationale |
 |---|---|---|
-| Destructive confirmation (delete, revoke) | `AlertDialog` | Non-dismissable overlay; Enter focuses Cancel by default |
-| Informational confirmation (archive, publish) | `Dialog` | Dismissable; standard keyboard behavior |
+| Destructive confirmation (delete, revoke) | `AlertDialog` | Non-dismissable overlay. Enter focuses Cancel by default |
+| Informational confirmation (archive, publish) | `Dialog` | Dismissable. Standard keyboard behavior |
 | Form embedded in overlay (create/edit record) | `Dialog` | Standard modal with scroll |
-| Detail preview / contextual panel | `Sheet` (right side) | Preserves page context; easier to dismiss |
+| Detail preview / contextual panel | `Sheet` (right side) | Preserves page context. Easier to dismiss |
 | Multi-step wizard | `Dialog` (with stepper) | Contained flow with progress indicator |
 | Mobile full-screen flow | `Drawer` (bottom sheet) | Native-feel for touch |
 
@@ -40,10 +40,10 @@ Current `dialog.tsx` default is `sm:max-w-lg` — this is the `md` tier. Pass `c
 ### 3 — Header Anatomy (required)
 Every Dialog must have a `DialogHeader` with:
 - `DialogTitle` — specific, noun-first: "Edit Contact", "New Deal", "Delete John Smith?"
-- `DialogDescription` — optional but recommended for forms; describes scope or consequence
+- `DialogDescription` — optional but recommended for forms. Describes scope or consequence
 - Close `×` button — top-right, always present (except `AlertDialog` which has no close ×)
 
-Title should be ≤5 words. It names the action, not the entity type alone ("Edit Contact", not "Contact").
+Title must be ≤5 words. It names the action, not the entity type alone ("Edit Contact", not "Contact").
 
 ### 4 — Footer Anatomy (required)
 Every Dialog with actions must have a `DialogFooter`:

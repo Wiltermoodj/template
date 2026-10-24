@@ -10,7 +10,7 @@ This reference outlines the exact punctuation constraints and word count calcula
 - The semicolon (`;`) is **never permitted** in ASD-STE100.
 - Semicolons allow overly long, compound thoughts that increase ambiguity and cognitive load.
 - **Remedy:** Replace every semicolon with a period (`.`) and divide the text into two distinct sentences.
-  - *Non-STE:* "Turn switch A to OFF; then wait for the light to extinguish."
+  - *Non-STE:* "Turn switch A to OFF. Then wait for the light to extinguish."
   - *STE:* "Turn switch A to the OFF position. Then wait until the light goes off."
 
 ### Hyphens for Directly Related Words (Rule 8.2)

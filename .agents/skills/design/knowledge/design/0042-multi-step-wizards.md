@@ -8,7 +8,7 @@ last_updated: "2026-08-08T07:20:00Z"
 # 0042 - Multi-Step Wizards & Complex Workflow Standards
 
 ## Context
-Complex creation flows (e.g. campaign setup, multi-step customer onboarding, service contract intake, custom vehicle builds) present high cognitive load when rendered as long single-page forms or naive linear wizards. Inconsistent step navigation, disabled "Next" buttons, lack of draft persistence, missing live previews, and poor error feedback cause user disorientation and high drop-off rates.
+Complex creation flows (for example, campaign setup, multi-step customer onboarding, service contract intake, custom vehicle builds) present high cognitive load when rendered as long single-page forms or naive linear wizards. Inconsistent step navigation, disabled "Next" buttons, lack of draft persistence, missing live previews, and poor error feedback cause user disorientation and high drop-off rates.
 
 ## Decision
 Adopt Facebook / Meta's gold-standard wizard architecture across all multi-step workflows:
@@ -16,9 +16,9 @@ Adopt Facebook / Meta's gold-standard wizard architecture across all multi-step 
 ### 1 — Layout & 3-Zone Anatomy
 Every multi-step wizard must adhere to a strict 3-zone layout managed by `<WizardShell>`:
 - **Top Header Bar:** Contains exit button (`✕ Exit`), live draft auto-save indicator ("Saving draft..." → "Draft saved"), and step progress counter ("Step 2 of 4").
-- **Left Vertical Step Tree Sidebar (240–280px):** Renders a vertical tree of steps. Completed steps show a checkmark (`✓`) icon; active step is highlighted; upcoming steps are neutral. Clicking any previously completed step jumps directly to that step without data loss.
+- **Left Vertical Step Tree Sidebar (240–280px):** Renders a vertical tree of steps. Completed steps show a checkmark (`✓`) icon. Active step is highlighted. Upcoming steps are neutral. Clicking any previously completed step jumps directly to that step without data loss.
 - **Center Form Canvas (60–70% width):** Focused input area displaying only the fields for the active step.
-- **Right Live Preview Panel (30–40% width):** Real-time summary or live preview (e.g. ad card preview, contract summary) that updates dynamically as inputs change.
+- **Right Live Preview Panel (30–40% width):** Real-time summary or live preview (for example, ad card preview, contract summary) that updates dynamically as inputs change.
 - **Bottom Sticky Navigation Bar:** Fixed bottom bar containing `[ Back ]` (secondary/outline) on the left and `[ Next: <StepName> -> ]` (primary default) on the right.
 
 ### 2 — Draft Auto-Save & Exit Guard
@@ -35,25 +35,25 @@ Every multi-step wizard must adhere to a strict 3-zone layout managed by `<Wizar
 ### 4 — Meta/Facebook-Grade Data Review Grid & Value Mapping (Data Imports)
 For data import wizards, Step 3 (Review & Validate) must adhere to Meta/Facebook Ads & Business Manager data ingestion standards:
 - **Status Filter Tabs:** Top filter bar allowing operators to isolate rows: `All Rows (N)`, `Valid (N)`, `Needs Attention / Errors (N)`, and `Conflicts (N)`.
-- **Inline Cell Editing & Resolution:** Spreadsheet-like cell rendering allowing direct editing of invalid values (e.g. fixing date formats, choosing a Dealer from an inline combobox cell) with real-time re-validation.
-- **Bulk Mass-Fix Actions:** One-click toolbar actions to resolve batch errors (e.g. *"Assign all 15 unlinked dealers to Org X"*, *"Approve all new tags"*, or *"Default missing priority to Medium"*).
+- **Inline Cell Editing & Resolution:** Spreadsheet-like cell rendering allowing direct editing of invalid values (for example, fixing date formats, choosing a Dealer from an inline combobox cell) with real-time re-validation.
+- **Bulk Mass-Fix Actions:** One-click toolbar actions to resolve batch errors (for example, *"Assign all 15 unlinked dealers to Org X"*, *"Approve all new tags"*, or *"Default missing priority to Medium"*).
 - **Value-Mapping Step (Step 2):** Support mapping raw CSV text values (such as stage names "In Negotiation" or priorities "Urgent") directly to application schema enum identifiers before record validation.
 
 ### 5 — Brand Templates & Template Precedence Over AI
-- **Multi-Template Brand Configuration:** Brands can store multiple named import templates (e.g., *Monthly Sell-Through*, *Quarterly YoY Report*, *Pre-Season Booking*).
+- **Multi-Template Brand Configuration:** Brands can store multiple named import templates (for example, *Monthly Sell-Through*, *Quarterly YoY Report*, *Pre-Season Booking*).
 - **Template Auto-Matching:** Header signatures automatically match and populate the appropriate brand template upon file selection.
 - **Brand Template Precedence:** User-selected or signature-matched template mapping rules take strict precedence over AI document parsing, eliminating AI hallucinations and guaranteeing deterministic agency parsing.
 
 ### 6 — Server Job Persistence & Async Status Drawer
 - **Decoupled Server Staging:** Files are staged in Cloud Storage and executed in server-side background worker chunks.
 - **Persistent Floating UI Drawer:** When an operator clicks `[ Run in Background ]`, the wizard collapses into a floating bottom-right drawer (`<ImportStatusDrawer />`) showing live percentage progress and row counters.
-- **Cross-Page & Off-Site Persistence:** The status drawer remains visible during SPA navigation across application pages (`/contacts`, `/organizations`, `/analytics`). Closing the browser tab does NOT interrupt the server import job; upon return, the user receives an alert toast and badge with job results.
+- **Cross-Page & Off-Site Persistence:** The status drawer remains visible during SPA navigation across application pages (`/contacts`, `/organizations`, `/analytics`). Closing the browser tab does NOT interrupt the server import job. Upon return, the user receives an alert toast and badge with job results.
 
 ### 7 — 3-Tier Interval Deduction & Temporal Merging
-- **3-Tier Sales Interval Engine:** Handles date overlaps via:
+- **3-Tier Sales Interval Engine:** Handles date overlaps through:
   1. *Clean Sub-Period Deduction*: Automatically calculates missing period totals ($A_{\text{deduced}} = A_{\text{incoming}} - A_{\text{existing}}$) and reverse-engineers historical periods from MoM/QoQ/YoY comparative metrics.
   2. *Proportional Day-Weighted Splitting*: Allocates run-rates for mid-month overlaps while enforcing a 100% confidence threshold for sub-monthly granularity.
-  3. *Deduction Conflict Cards*: Flags negative or divergent overlaps for explicit user approval (Trust Import vs. Trust DB vs. Log Conflict).
+  3. *Deduction Conflict Cards*: Flags negative or divergent overlaps for explicit user approval (Trust Import against. Trust DB against. Log Conflict).
 - **Temporal Deep Merge:** All entity updates (Contacts, Organizations) use `temporal-merge.ts` (`updatedAt` Last-Write-Wins), while enforcing `GenericDomainExclusionRule` to prevent public webmail domains (`gmail.com`, `comcast.net`) from creating or linking corporate organizations.
 
 ### 8 — Responsive Tier Adaptation

@@ -7,7 +7,7 @@ description: "Non-negotiable rules for maximum compiler and linter strictness ac
 
 # TypeScript (tsc) and ESLint Maximum Strictness Invariants
 
-All AI coding agents and engineers working in any OmniButler ecosystem repository must strictly adhere to these compiler and linter strictness invariants.
+All AI coding agents and engineers working in all OmniButler ecosystem repository must strictly adhere to these compiler and linter strictness invariants.
 
 ---
 
@@ -16,9 +16,9 @@ All AI coding agents and engineers working in any OmniButler ecosystem repositor
 The OmniButler ecosystem enforces high-assurance, type-safe software development. Type errors and lint violations represent functional defects and potential runtime failures.
 
 ### Non-Negotiable Invariants
-- **Zero Errors & Zero Warnings:** Both `npm run typecheck` (or `tsc --noEmit`) and `npm run lint` (or `eslint .`) must pass with exit code `0`.
+- **Zero Errors & Zero Warnings:** The two `npm run typecheck` (or `tsc --noEmit`) and `npm run lint` (or `eslint .`) must pass with exit code `0`.
 - **Zero Tolerance for `any`:** Neither explicit `any` (`: any`, `as any`, `<any>`) nor implicit `any` is allowed in production code. Relaxed exclusively for test files (`*.test.ts`, `*.spec.ts`).
-- **No Diagnostic Suppression:** Suppressing type checks or linter rules via comments, flags, or configuration overrides is **strictly prohibited**.
+- **No Diagnostic Suppression:** Suppressing type checks or linter rules through comments, flags, or configuration overrides is **strictly prohibited**.
 
 ---
 
@@ -41,11 +41,11 @@ The following flags are mandatory and must remain enabled in all TypeScript proj
 | `strictNullChecks` | `true` | Considers `null` and `undefined` as distinct domain types. |
 | `strictFunctionTypes` | `true` | Enforces contravariant parameter types for function parameters. |
 | `strictBindCallApply` | `true` | Enforces stricter type checking for `bind`, `call`, and `apply` methods. |
-| `strictPropertyInitialization` | `true` | Ensures class properties are initialized in the constructor. |
+| `strictPropertyInitialization` | `true` | Makes sure that class properties are initialized in the constructor. |
 | `alwaysStrict` | `true` | Emits `"use strict"` and parses files in ECMAScript strict mode. |
 | `noUncheckedIndexedAccess` | `true` | Appends `undefined` to index signatures and array lookups (`T[number] -> T \| undefined`). Forces bounds validation before access. |
 | `exactOptionalPropertyTypes` | `true` | Differentiates omitted properties from explicit `undefined` values. |
-| `noImplicitReturns` | `true` | Ensures every code branch in a function explicitly returns a value. |
+| `noImplicitReturns` | `true` | Makes sure that every code branch in a function explicitly returns a value. |
 | `noFallthroughCasesInSwitch` | `true` | Prevents unintentional fallthrough between switch clauses. |
 | `noImplicitOverride` | `true` | Requires the `override` keyword when overriding derived class members. |
 | `allowUnreachableCode` | `false` | Raises compiler errors for code following `return`, `throw`, or infinite loops. |
@@ -110,7 +110,7 @@ The following zero-tolerance rules are configured as errors and must never be al
 
 ## 4. Strict Protocol for AI Coding Agents
 
-When working in any OmniButler ecosystem repository, AI agents must abide by the following constraints:
+When working in all OmniButler ecosystem repository, AI agents must abide by the following constraints:
 
 ### 4.1 Strictly Prohibited Agent Actions
 1. **Never relax compiler configs:** Do not disable, weaken, or omit compiler options in `tsconfig.json` (such as setting `"strict": false`, removing `"noUncheckedIndexedAccess"`, or adding files to `"exclude"` to bypass errors).

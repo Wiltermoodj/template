@@ -89,7 +89,7 @@ To prevent awkward mid-element splits across physical printed pages:
 
 ### 3 — Printable Document Anatomy & Header Block
 
-Every printable detail view (e.g. Invoices, Field Repair Sheets) must render a dedicated `.print-only` header block that is hidden in the web browser (`hidden print:block`):
+Every printable detail view (for example, Invoices, Field Repair Sheets) must render a dedicated `.print-only` header block that is hidden in the web browser (`hidden print:block`):
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -103,12 +103,12 @@ Every printable detail view (e.g. Invoices, Field Repair Sheets) must render a d
 ## Anti-Patterns & Prohibitions
 
 1. **No Interactive Controls on Printouts:** Never print action buttons (`[Edit]`, `[Delete]`), search inputs, or pagination toggles.
-2. **No Heavy Dark Fills:** Never allow dark mode backgrounds or dark card fills to print; all print styles must force pure `#ffffff` backgrounds with `#000000` text.
+2. **No Heavy Dark Fills:** Never allow dark mode backgrounds or dark card fills to print. All print styles must force pure `#ffffff` backgrounds with `#000000` text.
 3. **No Hidden Overflow Clipping:** Remove `overflow-hidden` and fixed heights (`h-screen`, `max-h-*`) during print so that multi-page records render fully.
 
 ---
 
 ## Open Questions for Discussion
 
-- Should print export templates include a printable QR code linking back to the live digital entity URL?
-- Should PDF generation be handled client-side via CSS `@media print` or server-side via headless Chromium?
+- Must print export templates include a printable QR code linking back to the live digital entity URL?
+- Must PDF generation be handled client-side through CSS `@media print` or server-side through headless Chromium?

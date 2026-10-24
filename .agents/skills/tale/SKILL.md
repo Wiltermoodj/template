@@ -20,11 +20,11 @@ All documentation and agent output must obey the writing rules and controlled vo
 1. **One Word, One Meaning, One Part of Speech:** Use approved words only as their specified part of speech. Do not use technical nouns as verbs.
 2. **Strict Semicolon Prohibition:** Semicolons (`;`) are **strictly prohibited**. Always split compound thoughts into separate sentences with periods (`.`).
 3. **No Contractions or Omissions:** Never use contractions (*do not*, *cannot*, *is not*). Never omit articles (*a*, *an*, *the*) or demonstratives (*this*, *these*).
-4. **Sentence Word Limits:** 
+4. **Sentence Word Limits:**
    - **Maximum 20 words** for procedural instructions (commands).
    - **Maximum 25 words** for descriptive sentences.
 5. **Strict Active Voice & Simple Tenses:** Write in the active voice. Use only Infinitive, Imperative, Simple Present, Simple Past, and Simple Future (*will*).
-6. **No Progressive "-ing" Verbs:** Never use "-ing" words as progressive action verbs (`is running`, `was opening`). Use "-ing" words only as technical nouns (`the bearing`) or modifiers (`cooling system`).
+6. **No Progressive "-ing" Verbs:** Never use "-ing" words as progressive action verbs (`runs`, `was opening`). Use "-ing" words only as technical nouns (`the bearing`) or modifiers (`cooling system`).
 7. **Multi-Word Noun Limit:** Multi-word nouns must not exceed **three words** (for example, *APU shutoff valve*).
 8. **Paragraph Limits:** Maximum of **one topic** and **six sentences** per paragraph.
 
@@ -50,17 +50,17 @@ When crafting text, consult these specialized sub-references:
 
 | Non-STE Word / Phrasing | Approved STE Equivalent | Example Revision |
 |:---|:---|:---|
-| `acceptable` *(adj)* | **PERMITTED** *(adj)* | "A delay of 5 ms is permitted." |
+| `permitted` *(adj)* | **PERMITTED** *(adj)* | "A delay of 5 ms is permitted." |
 | `check` *(verb)* | **CHECK** *(noun)* / **EXAMINE** *(verb)* | "Do a check of the response payload." |
-| `ensure` *(verb)* | **MAKE SURE** *(verb)* | "Make sure that the database connection is open." |
-| `perform` / `execute` *(verb)* | **DO** *(verb)* | "Do the migration script." |
-| `rotate` *(verb)* | **TURN** *(verb)* | "Turn the dial clockwise." |
-| `should` / `shall` *(verb)* | **MUST** *(verb)* | "The client must send the authentication token." |
+| `make sure that` *(verb)* | **MAKE SURE** *(verb)* | "Make sure that the database connection is open." |
+| `do` / `execute` *(verb)* | **DO** *(verb)* | "Do the migration script." |
+| `turn` *(verb)* | **TURN** *(verb)* | "Turn the dial clockwise." |
+| `must` / `must` *(verb)* | **MUST** *(verb)* | "The client must send the authentication token." |
 | `since` *(as because)* | **BECAUSE** *(conj)* | "Because the lock expired, the task aborted." |
 | `therefore` *(adv)* | **THUS** *(adv)* / **AS A RESULT** | "Thus, the transaction rolls back." |
 | `under` *(for values)* | **LESS THAN** / **BELOW** | "When latency is less than 50 ms..." |
-| `using` / `utilize` *(verb)* | **USE** *(verb)* / **WITH** *(prep)* | "Use the CLI tool to inspect the state." |
-| `e.g.`, `i.e.`, `etc.` | **for example**, **that is**, **and so on** | Replace all Latin abbreviations. |
+| `using` / `use` *(verb)* | **USE** *(verb)* / **WITH** *(prep)* | "Use the CLI tool to inspect the state." |
+| `for example, `, `that is, `, `and so on.` | **for example**, **that is**, **and so on** | Replace all Latin abbreviations. |
 
 ---
 

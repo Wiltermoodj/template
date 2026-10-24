@@ -14,7 +14,7 @@ Web application interfaces suffer from inconsistent layout patterns — navigati
 
 1. **F-Pattern Content Flow:** Primary data and CTAs occupy top-left quadrant. Layouts read top-to-bottom, left-to-right.
 2. **Navigation Hierarchy:** Persistent sidebar (5–9 top-level items) for domain navigation. Low-frequency actions (profile, settings, billing) move to header profile menu.
-3. **Sidebar Specification:** Collapsed: 64px icon-only. Expanded: 240–280px. Toggle via explicit button. Mobile: full-screen drawer overlay.
+3. **Sidebar Specification:** Collapsed: 64px icon-only. Expanded: 240–280px. Toggle through explicit button. Mobile: full-screen drawer overlay.
 4. **Dashboard Grids:** Overview dashboards use 2–3 column grids (max 6 cards above fold). Detail views use single-column stacked sections.
 5. **Whitespace Over Borders:** Group related content by proximity and spacing — not containers or dividers. Visible borders reserved for interactive affordances (cards, inputs, tables).
 6. **Z-Index Scale:** Standardized global layering — Base (0), Dropdowns (40), Sticky (50), FABs (60), Drawers (70), Modals (80), Toasts (100).

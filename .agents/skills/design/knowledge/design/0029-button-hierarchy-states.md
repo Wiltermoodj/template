@@ -46,7 +46,7 @@ One button per tier per surface (card, modal footer, toolbar section):
 | `sm` | Dense toolbars, table row overflow triggers, chips |
 | `default` | Standard form submissions, modal footers, page CTAs |
 | `lg` | Hero sections, onboarding primary CTA only |
-| `icon` / `icon-sm` / `icon-lg` | Icon-only controls; mandatory `aria-label` |
+| `icon` / `icon-sm` / `icon-lg` | Icon-only controls. Mandatory `aria-label` |
 
 ### 5 — Loading State
 - On click: disabled + `Loader2` spinner (`animate-spin`) replaces leading icon or appears left of label.
@@ -54,7 +54,7 @@ One button per tier per surface (card, modal footer, toolbar section):
 - The button is the status indicator — no separate full-screen spinner.
 
 ### 6 — Icon Placement
-- Leading icon only, except directional navigation (e.g., "Next →").
+- Leading icon only, except directional navigation (for example, "Next →").
 - Icon size: 16px (Action tier per [ADR 0021](0021-iconography-imagery.md)).
 
 ### 7 — Keyboard & Focus Defaults

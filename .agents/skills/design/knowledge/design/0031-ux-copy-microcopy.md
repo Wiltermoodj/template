@@ -28,7 +28,7 @@ No documented tone of voice or copy conventions exist. Strings scattered across 
 
 ### 3 — Error Messages
 Structure: **What happened** + **What to do**.
-- ✅ "Couldn't save contact. Check your connection and try again."
+- ✅ "Could not save contact. Check your connection and try again."
 - ✅ "This email is already in use. Sign in instead, or use a different email."
 - ❌ "An error occurred."
 - ❌ "Something went wrong. Please try again later."
@@ -48,7 +48,7 @@ Structure: **Action-oriented title** + **Brief why/what** + **CTA button** (when
 | No contacts | "Add your first contact" | "Start building your network by adding a contact." |
 | No deals | "Start tracking deals" | "Add your first deal to see it here." |
 | No search results | "No results for "{query}"" | "Try different keywords or check your filters." |
-| No notifications | "You're all caught up" | "New notifications will appear here." |
+| No notifications | "You are all caught up" | "New notifications will appear here." |
 | Filter produced 0 results | "No matches found" | "Try adjusting your filters." |
 
 Rules:
@@ -64,15 +64,15 @@ Rules:
 
 ### 6 — Toast / Notification Copy (supplements ADR 0033)
 
-**Canonical source:** [ADR 0033 §5 — Toast & Notification Rules](0033-toast-notification-rules.md) defines the full toast copy rules (success, error, undo, info, 60-char max). The tone rules in §1–2 above apply to all toast strings; the structural format is governed by ADR 0033.
+**Canonical source:** [ADR 0033 §5 — Toast & Notification Rules](0033-toast-notification-rules.md) defines the full toast copy rules (success, error, undo, info, 60-char max). The tone rules in §1–2 above apply to all toast strings. The structural format is governed by ADR 0033.
 
 ### 7 — Confirmation Dialog Copy (supplements ADR 0036)
 
-**Canonical source:** [ADR 0036 §4 — Semantic Color at Rest & Destructive Action Confirmation](0036-destructive-action-confirmation.md) defines confirmation dialog anatomy and copy requirements. The tone rules in §1–2 above apply to all dialog strings; the structural format (question-form title, entity-named confirm button) is governed by ADR 0036.
+**Canonical source:** [ADR 0036 §4 — Semantic Color at Rest & Destructive Action Confirmation](0036-destructive-action-confirmation.md) defines confirmation dialog anatomy and copy requirements. The tone rules in §1–2 above apply to all dialog strings. The structural format (question-form title, entity-named confirm button) is governed by ADR 0036.
 
 ### 8 — Placeholder Text in Inputs (supplements ADR 0025)
 - Placeholder supplements the label — it does not replace it.
-- Format: hint, not instruction. "e.g., john@example.com" not "Enter email address".
+- Format: hint, not instruction. "for example, john@example.com" not "Enter email address".
 - Never use placeholder as the only indicator of what a field expects.
 
 ### 9 — Forbidden Phrases

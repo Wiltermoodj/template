@@ -10,13 +10,13 @@ date: "2026-08-10"
 
 ## Context
 
-Mobile web and hybrid applications frequently require persistent access to high-frequency actions (e.g., creating items, filtering datasets, invoking voice or AI assistants, or initiating communications). 
+Mobile web and hybrid applications frequently require persistent access to high-frequency actions (for example, creating items, filtering datasets, invoking voice or AI assistants, or initiating communications).
 
 Historically, applications mix two competing interaction paradigms:
 1. **Floating Action Buttons (FABs)**: Unanchored circular buttons hovering over content in a screen corner.
 2. **Sticky Footer Bars**: Docked horizontal toolbars pinned to the bottom of the viewport.
 
-Mixing both paradigms within the same application creates severe usability defects:
+Mixing the two paradigms within the same application creates severe usability defects:
 - **UI Collisions**: Floating FABs hover directly over bottom table rows, pagination controls, or docked footer bars.
 - **Safe-Area Bugs**: Hardcoded bottom CSS offsets ignore device notch and safe-area inset environment variables (`env(safe-area-inset-bottom)`).
 - **Inconsistent UX**: Users face unpredictable action locations when switching between list views, detail views, and workflow pages.
@@ -27,7 +27,7 @@ We establish an application-wide interaction paradigm consistency rule and defin
 
 ### 1. Application-Wide Paradigm Consistency
 An application **MUST** select a single mobile bottom interaction paradigm across the entire application:
-- **Sticky Footer Paradigm (Default for multi-action & data-dense apps)**: Selected when views require 1–3 contextual or primary actions (e.g., search/filter, primary CTA, global assistant trigger).
+- **Sticky Footer Paradigm (Default for multi-action & data-dense apps)**: Selected when views require 1–3 contextual or primary actions (for example, search/filter, primary CTA, global assistant trigger).
 - **FAB Paradigm**: Selected ONLY for minimal applications where every view requires strictly one singular floating action and zero secondary contextual tools.
 
 > **Rule:** Mixing FABs and Sticky Footers on different screens of the same application is strictly prohibited. Once an application selects the Sticky Footer paradigm, all page-level FABs are deprecated on mobile viewports.
@@ -40,7 +40,7 @@ Sticky Footers must adapt dynamically between 1 and 3 slots based on the specifi
 | Layout | Slot Configuration | Use Cases |
 |---|---|---|
 | **1-Slot (Single Primary)** | Full-width primary CTA button | Form submissions, single-action workflows, simple creation flows |
-| **2-Slot (Dual Action)** | Left: Secondary/Context CTA · Right: Primary CTA | Detail pages (e.g., Call / Log Note), confirmation bars (e.g., Cancel / Save) |
+| **2-Slot (Dual Action)** | Left: Secondary/Context CTA · Right: Primary CTA | Detail pages (for example, Call / Log Note), confirmation bars (for example, Cancel / Save) |
 | **3-Slot (Tri-Action Standard)** | Left: Context (Search/Filter) · Center: Primary CTA · Right: Assistant/Voice | Main list views (Tasks, Contacts, Deals, Organizations) requiring view management, primary creation, and global AI voice triggers |
 
 ---
@@ -70,7 +70,7 @@ Every sticky footer must satisfy the following technical layout contract:
 - `z-30`: Sticky table headers / in-page sticky tabs
 - `z-40`: Mobile Sticky Footer bar
 - `z-50`: Global floating toasts / snackbars
-- `z-60`: Sliding drawers (e.g., Copilot Drawer, Inspector Drawer)
+- `z-60`: Sliding drawers (for example, Copilot Drawer, Inspector Drawer)
 - `z-70`+: Modals & Alert dialogs
 
 ## Consequences

@@ -13,8 +13,8 @@ Multi-theme applications suffer from incomplete theme definitions and illegible 
 ## Decision
 Adopt theming and dark mode elevation mechanics:
 
-1. **Theme Contract:** Every theme must supply a complete manifest of CSS custom properties. Incomplete theme manifests fail build validation.
-2. **Required Token Categories:** Every theme must supply a complete set of CSS custom properties covering: surface backgrounds (4 tiers), text contrast (3 tiers), primary/secondary/accent + foreground, dynamic feedback colors, border/input/ring, and 5 OKLCH chart series. Incomplete manifests fail build validation.
+1. **Theme Contract:** Every theme must supply completed manifest of CSS custom properties. Incomplete theme manifests fail build validation.
+2. **Required Token Categories:** Every theme must supply completed set of CSS custom properties covering: surface backgrounds (4 tiers), text contrast (3 tiers), primary/secondary/accent + foreground, dynamic feedback colors, border/input/ring, and 5 OKLCH chart series. Incomplete manifests fail build validation.
 3. **Dark Mode Surface Elevation Mechanics:**
    - **z-Index Lightness Progression:** Dark mode surfaces **must strictly get lighter** as z-index increases: Layer 0 Canvas (darkest background) → Layer 1 Frame → Layer 2 Cards/Panels → Layer 3 Modals/Popovers (lightest dark surface).
    - **Double Lightness Contrast Gap:** Dark mode requires **double the lightness contrast gap (4%–6%)** between adjacent elevation layers compared to light mode (2%), preventing dark surfaces from bleeding together visually.

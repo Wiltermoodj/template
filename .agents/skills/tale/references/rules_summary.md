@@ -142,10 +142,10 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
   - *Non-STE:* "The transaction is committed by the ledger engine." (Passive)
   - *STE:* "The ledger engine commits the transaction." (Active)
 
-### Rule 3.7: Use Verbs for Actions (Avoid Nominalizations)
+### Rule 3.7: Use Verbs for Actions (Prevent Nominalizations)
 - **Rule:** Use an approved verb to describe an action, not an abstract noun.
 - **Example:**
-  - *Non-STE:* "Perform the alignment of the gears."
+  - *Non-STE:* "Do the alignment of the gears."
   - *STE:* "Align the gears."
   - *Non-STE:* "Make a decision on the pull request."
   - *STE:* "Decide on the pull request."
@@ -158,11 +158,11 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 - **Rule:** Write short, clear sentences. Each sentence must express only **one primary idea or action**.
 
 ### Rule 4.2: No Omission of Functional Words and No Contractions
-- **Rule:** 
+- **Rule:**
   1. Do not omit articles (*a*, *an*, *the*) or demonstratives (*this*, *these*) to save space.
   2. **Contractions are strictly prohibited** (write *do not*, *cannot*, *is not*, *will not*).
 - **Example:**
-  - *Non-STE:* "Don't disconnect cable before power off."
+  - *Non-STE:* "Do not disconnect cable before power off."
   - *STE:* "Do not disconnect the cable before you turn off the power."
 
 ### Rule 4.3: Vertical Lists for Complex Text
@@ -296,7 +296,7 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 ### GR-3: Clear Pronoun Antecedents
 - **Rule:** Use pronouns (*it*, *they*, *this*, *these*) only when the antecedent noun is immediately obvious.
 
-### GR-4: Avoiding Vague "This"
+### GR-4: Preventing Vague "This"
 - **Rule:** Never use "This" as a standalone subject. Always pair "this" with a specific noun (for example: "This procedure...").
 
 ### GR-5: Beware of False Friends
@@ -304,15 +304,15 @@ This reference contains the writing rules from **Part 1 of ASD-STE100 Simplified
 
 ### GR-6: No Latin Abbreviations
 - **Rule:** Do not use Latin abbreviations. Replace with full English equivalents:
-  - Replace `e.g.` with "for example"
-  - Replace `i.e.` with "that is"
-  - Replace `etc.` with "and so on" or list all items explicitly
-  - Replace `vs` with "compared with" or "against"
+  - Replace `for example, ` with "for example"
+  - Replace `that is, ` with "that is"
+  - Replace `and so on.` with "and so on" or list all items explicitly
+  - Replace `against` with "compared with" or "against"
 
 ### GR-7: Inclusive and Gender-Neutral Language
 - **Rule:** Use gender-neutral nouns and pronouns (*person*, *operator*, *personnel*, *mechanic*, *they/their*).
 
-### GR-8: Possessive Forms (Avoid 's for Inanimate Objects)
+### GR-8: Possessive Forms (Prevent 's for Inanimate Objects)
 - **Rule:** Use the Saxon genitive (`'s`) only for persons or organizations. For inanimate objects, use "of" or compound nouns.
 - **Example:**
   - *Non-STE:* "The system's response time..."

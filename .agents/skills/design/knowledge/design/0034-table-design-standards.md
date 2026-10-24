@@ -21,7 +21,7 @@ last_updated: "2026-08-08T05:45:00Z"
 All categorical attributes, record tiers, and status information must be displayed using one of two approved system patterns:
 
 #### Sub-label Stacking (System Standard — Default)
-- **Sub-label Stacking Inside a Single Cell:** Primary text sits on the top line; secondary metadata, tier names, and IDs sit stacked on the bottom line within the exact same primary cell.
+- **Sub-label Stacking Inside a Single Cell:** Primary text sits on the top line. Secondary metadata, tier names, and IDs sit stacked on the bottom line within the exact same primary cell.
 - **Typography & Opacity Hierarchy:**
   - **Top Line:** Primary Identifier / Name in `font-medium text-foreground`.
   - **Bottom Line:** Muted Tier Name $\cdot$ Secondary ID at **50%–60% opacity** (`text-muted-foreground/60 text-xs`).
@@ -47,13 +47,13 @@ Tables must support a user density toggle:
 
 ### 5 — Inline & Menu-Gated Row Actions
 - Row actions use neutral `ghost` icon buttons.
-- **Canonical source for color-at-rest and destructive entry point rules:** [ADR 0036 §1 & §2](0036-destructive-action-confirmation.md). Summary: destructive row actions must never appear as persistent red buttons; they must be tucked inside an overflow menu (`MoreHorizontal` ghost icon). Red accent highlights manifest only when hovering over the destructive item inside the open menu.
+- **Canonical source for color-at-rest and destructive entry point rules:** [ADR 0036 §1 & §2](0036-destructive-action-confirmation.md). Summary: destructive row actions must never appear as persistent red buttons. They must be tucked inside an overflow menu (`MoreHorizontal` ghost icon). Red accent highlights manifest only when hovering over the destructive item inside the open menu.
 
 ### 6 — Responsive Table Adaptations
 
 **Canonical source:** [ADR 0024 §3 — Responsive & Adaptive Layout](0024-responsive-layout.md) defines the full Desktop / Tablet / Mobile table adaptation spec. Summary:
 - **Desktop (>1024px):** Full structured table.
-- **Tablet (768px–1024px):** Progressive column hiding; secondary columns collapse into expandable detail rows.
+- **Tablet (768px–1024px):** Progressive column hiding. Secondary columns collapse into expandable detail rows.
 - **Mobile (<768px):** Mandatory Mobile Card Transformation — grid structures dismantle into stacked cards with Sub-label Stacking.
 
 ## Consequences

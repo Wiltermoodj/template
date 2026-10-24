@@ -20,7 +20,7 @@ Adopt standardized form and AI component input patterns:
 5. **Structured Input Preview Blocks:** Pasted code snippets, uploaded PDFs, or attached images must immediately compress into compact, removable card preview blocks displaying file type, size, thumbnail/snippet preview, and a single-click remove icon (`✕`).
 6. **Execution Trails & Confidence Indicators:**
    - **Execution Trails:** AI processing states must show live, step-by-step progress trails ("Searching → Indexing → Generating response") using non-linear physics transitions.
-   - **Confidence Indicators:** AI-generated outputs must display non-invasive, click-to-expand numeric confidence scores (e.g., `94% match`) positioned unobtrusively alongside generated content.
+   - **Confidence Indicators:** AI-generated outputs must display non-invasive, click-to-expand numeric confidence scores (for example, `94% match`) positioned unobtrusively alongside generated content.
 7. **Field Grouping & Multi-Step:** Related fields sit in semantic `<fieldset>`/`<legend>` blocks separated by 32px (`space-8`). Multi-step forms feature progress steppers with zero data loss on backward navigation.
 
 ### AI-Assisted Input Patterns
@@ -29,4 +29,4 @@ Adopt standardized form and AI component input patterns:
 8. **AI Input Prompt Canvases:** Position prompt canvases above the fold. Multi-line expansion, explicit trigger button, and `⌘Enter` to execute.
 9. **Structured Input Preview Blocks:** Pasted code, uploaded PDFs, or attached images compress into compact, removable preview cards showing file type, size, thumbnail, and a `✕` remove icon.
 10. **Execution Trails:** AI processing must show live step-by-step progress ("Searching → Indexing → Generating response") using non-linear transitions.
-11. **Confidence Indicators:** AI-generated outputs display click-to-expand numeric confidence scores (e.g., `94% match`) unobtrusively alongside content.
+11. **Confidence Indicators:** AI-generated outputs display click-to-expand numeric confidence scores (for example, `94% match`) unobtrusively alongside content.

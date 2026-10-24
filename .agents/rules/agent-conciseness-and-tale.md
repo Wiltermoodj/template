@@ -52,8 +52,8 @@ When writing TypeScript or JavaScript code:
    - Write all code comments and TSDoc summaries in the **Simple Present Tense** and active voice.
    - State *why* the code exists, not *what* the syntax does.
    - Semicolons (`;`) are strictly prohibited in comments. Split thoughts into separate sentences.
-   - Contractions (such as `don't` or `can't`) are strictly prohibited in comments.
-   - Use approved vocabulary from ASD-STE100 (for example: use `make sure that` instead of `ensure`).
+   - Contractions (such as `do not` or `cannot`) are strictly prohibited in comments.
+   - Use approved vocabulary from ASD-STE100 (for example: use `make sure that` instead of `make sure that`).
 
 ---
 

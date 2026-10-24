@@ -9,8 +9,6 @@ description: "Core architectural, design, and code quality invariants."
 
 All contributors and AI agents must follow these invariants.
 
----
-
 ## 1. Design & UI Invariants
 
 1. **Zero Semantic Colors at Rest:** Never style resting UI containers or text with semantic alert tokens (`destructive`, `warning`, `success`). Use neutral tokens with hover-gated accents.
@@ -22,15 +20,11 @@ All contributors and AI agents must follow these invariants.
 7. **Motion Limits:** Do not use linear easing or `transition: all`. Keep motion durations within 500ms.
 8. **Accessible Touch Targets:** Interactive icon buttons must keep a minimum 44×44px hit target and include descriptive `aria-label` attributes.
 
----
-
 ## 2. Token Scales
 
 - **Spacing:** Use standard scale (`space-1` to `space-12`). Arbitrary pixel values (for example: `p-[13px]`) are forbidden.
 - **Elevation:** Use the 5-tier shadow scale (`shadow-xs`, `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`).
 - **Z-Index:** Base (`0`), Dropdowns (`40`), Sticky (`50`), Modals (`80`), Toasts (`100`).
-
----
 
 ## 3. Code & Language Standards
 

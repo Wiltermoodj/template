@@ -12,7 +12,7 @@ Legacy UI patterns relied on static status pills, colored dot indicators (`•`)
 
 > [!CAUTION]
 > ### Total Deprecation Notice
-> The `badge.tsx` component, static status pills, colored status dots (`•`), and standalone colored status text are **completely deprecated system-wide**. No new features may consume `badge.tsx` or introduce pill/dot status indicators.
+> The `badge.tsx` component, static status pills, colored status dots (`•`), and standalone colored status text are **completely deprecated system-wide**. No new features can consume `badge.tsx` or introduce pill/dot status indicators.
 
 ## Decision
 

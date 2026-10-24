@@ -70,7 +70,7 @@ Components consume ONLY semantic tokens.
 **Dark mode validation:**
 - Minimum lightness delta between adjacent background layers
 - Borders shift to lightened strokes
-- Manual override persisted; default = system preference
+- Manual override persisted. Default = system preference
 
 ---
 
@@ -123,8 +123,8 @@ Higher-elevation elements always cast larger shadows. Shadowless elements must n
 |---|---|---|
 | base | 0 | Mobile — single column |
 | `sm` | 640px | Minor layout unlocks |
-| `md` | 768px | Tables→cards; multi-col forms→single |
-| `lg` | 1024px | Side panels expand; 2-col layouts |
+| `md` | 768px | Tables→cards. Multi-col forms→single |
+| `lg` | 1024px | Side panels expand. 2-col layouts |
 | `xl` | 1280px | Full dashboard grids |
 
 ---
@@ -167,7 +167,7 @@ Every theme must define:
 - Minimum lightness delta between adjacent backgrounds
 - Borders shift to lightened strokes
 - Images dimmed or desaturated
-- Manual override persisted; default = system preference
+- Manual override persisted. Default = system preference
 
 ---
 
@@ -175,7 +175,7 @@ Every theme must define:
 
 | Rule | Detail |
 |---|---|
-| Input height | 36–40px; textarea min 80px |
+| Input height | 36–40px. Textarea min 80px |
 | Labels | Always above — never placeholder-only |
 | Validation trigger | Text inputs: on blur · Selects/toggles: on change |
 | Error state | Red border + ✕ icon + message below |
@@ -183,7 +183,7 @@ Every theme must define:
 | Success state | Green + ✓ icon + message below |
 | Required indicator | `*` in destructive color beside label |
 | Optional grouping | Label group "Optional." explicitly |
-| Field grouping | `<fieldset>` / `<legend>`; separated by `space-8` (32px) |
+| Field grouping | `<fieldset>` / `<legend>`. Separated by `space-8` (32px) |
 | Multi-step | stepper showing current/total/completed |
 
 ---
@@ -192,8 +192,8 @@ Every theme must define:
 
 - Chart palette: 5–8 colors, ≥30° OKLCH hue separation, WCAG AA contrast
 - Mandatory: title, labeled axes with units, legend (multi-series), readable gridlines
-- Tooltips: hover desktop / tap mobile; show value + series + unit; follow cursor
-- Below `md`: simplify to key metrics or tabular summary; legend below chart; min height 200px
+- Tooltips: hover desktop / tap mobile. Show value + series + unit. Follow cursor
+- Below `md`: simplify to key metrics or tabular summary. Legend below chart. Min height 200px
 - Every chart must have a tabular data alternative for screen readers
 
 ---
@@ -202,9 +202,9 @@ Every theme must define:
 
 - [ ] WCAG 2.1 Level AA minimum
 - [ ] `:focus-visible` 2px ring — never suppressed
-- [ ] Focus trapped inside modals; returned to trigger on close
+- [ ] Focus trapped inside modals. Returned to trigger on close
 - [ ] Skip-navigation link on every page
-- [ ] One `<h1>` per page; no skipped heading levels
+- [ ] One `<h1>` per page. No skipped heading levels
 - [ ] `<nav>`, `<main>`, `<aside>` over `<div>` where semantic
 - [ ] Status indicators use icon/text in addition to color
 - [ ] 44×44px minimum touch targets
@@ -230,9 +230,9 @@ Every theme must define:
 
 ## Toolbar / Header Principles
 
-- Toolbar: max height across viewports; single-row layout preferred; persistent overflow anchor; tooltip delay tier; max 1 primary action
-- Header: limited zones; fixed height; no nav links inside header
-- Persistent-surface utilities are icon-only; transient-surface buttons require text or icon+text
+- Toolbar: max height across viewports. Single-row layout preferred. Persistent overflow anchor. Tooltip delay tier. Max 1 primary action
+- Header: limited zones. Fixed height. No nav links inside header
+- Persistent-surface utilities are icon-only. Transient-surface buttons require text or icon+text
 
 ---
 
@@ -294,7 +294,7 @@ Evaluate risk and persistence:
       └─► Use standard dialog
 ```
 
-### Button text vs icon
+### Button text against icon
 ```
 Evaluate surface persistence:
   ├─► Persistent surface?
@@ -337,5 +337,5 @@ Use an em-dash. Never use N/A, null, -, or blank.
 | Surface Tier | ADR 0041 |
 | Mobile Bottom Actions | ADR 0045 |
 | Wizards | ADR 0042 |
-| Button Text vs Icon | ADR 0043 |
+| Button Text against Icon | ADR 0043 |
 | Scrollbar Auto-Hide | ADR 0044 |

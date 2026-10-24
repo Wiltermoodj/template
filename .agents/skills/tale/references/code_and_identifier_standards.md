@@ -67,7 +67,7 @@ export function calculateCartTotal(lineItems: CartItem[]): number {
 - Write whole sentences starting with a capital letter and ending with a period.
 - Explain the reason or business logic, not the syntax.
 - **Rules:**
-  - *Non-STE:* `// checking if amount isn't 0; if so, abort`
+  - *Non-STE:* `// checking if amount is not 0; if so, abort`
   - *STE:* `// Abort the transaction if the amount is 0.`
 
 ---
@@ -78,6 +78,6 @@ Before saving source files, verify:
 - [ ] Do all function names begin with a clear, active verb?
 - [ ] Are variable names limited to 3 words or fewer?
 - [ ] Are comments free of semicolons (`;`)?
-- [ ] Are comments free of contractions (`don't`, `can't`, `it's`)?
-- [ ] Are comments free of progressive action verbs (`is running`, `calculating`)?
+- [ ] Are comments free of contractions (`do not`, `cannot`, `it is`)?
+- [ ] Are comments free of progressive action verbs (`runs`, `calculating`)?
 - [ ] Do comments describe *why* the code exists, rather than restating syntax?

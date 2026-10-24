@@ -17,7 +17,7 @@ Destructive actions (deleting records, revoking access, cancelling contracts) pr
 This is the foundational rule governing all semantic colors (success, warning, and destructive) in the application UI:
 
 - **Semantic Alert Colors Banned at Rest:** Success green, warning amber, and destructive red are **strictly forbidden** on resting UI surfaces — including cards, table rows, section headers, badges, buttons, and default view states. This extends and formalizes the color-system rule in [ADR 0020](0020-color-system.md) (§5 — Dynamic-Only Semantic Status Palette).
-- **Allowed Surfaces Only:** Semantic colors may only manifest during **active user interaction or ephemeral system events**:
+- **Allowed Surfaces Only:** Semantic colors can only manifest during **active user interaction or ephemeral system events**:
   - Destructive / warning colors → inside an **open overflow menu** (red text + background highlight on hover of the destructive item only)
   - Destructive confirm button → inside an **active `AlertDialog`** modal
   - Success / warning / error colors → **transient toast notifications** (<4–8s auto-dismiss, per [ADR 0033](0033-toast-notification-rules.md))
@@ -27,7 +27,7 @@ This is the foundational rule governing all semantic colors (success, warning, a
 
 ### 2 — Menu-Gated Destructive Entry Points
 - **Resting Trigger Neutrality:** Resting buttons preceding a destructive workflow **must remain neutral or `ghost` style**. Persistent red "Delete" buttons on resting screens are strictly forbidden (covered by Rule 1 above).
-- **Allowed Entry Points:** Destructive workflows can **only** be initiated from inside an open overflow menu (`...`) (where red highlight manifests solely on active item hover) or via explicit modal dialog triggers.
+- **Allowed Entry Points:** Destructive workflows can **only** be initiated from inside an open overflow menu (`...`) (where red highlight manifests solely on active item hover) or through explicit modal dialog triggers.
 
 ### 3 — When Confirmation Is Required
 
@@ -37,7 +37,7 @@ This is the foundational rule governing all semantic colors (success, warning, a
 | Permanently delete a record | Irreversible data loss |
 | Bulk delete (≥2 records) | Higher impact, harder to recover |
 | Revoke user access / role removal | Security consequence |
-| Cancel a deal / close a deal (financial) | Revenue-impacting, may affect commissions |
+| Cancel a deal / close a deal (financial) | Revenue-impacting, can affect commissions |
 | Disconnect an integration (Google, Stripe) | Service disruption |
 | Clear / reset data (import rollback) | Bulk data modification |
 
@@ -60,7 +60,7 @@ Use `AlertDialog` (not standard `Dialog` — see ADR 0032) for all hard destruct
 ### 5 — Undo as Alternative to Confirmation
 For soft-delete workflows where records can be recovered within a grace period:
 - Skip the confirmation dialog.
-- Perform the action immediately (optimistic UI, ADR 0022).
+- Do the action immediately (optimistic UI, ADR 0022).
 - Show an 8-second undo toast ([ADR 0033](0033-toast-notification-rules.md) §4): "John Smith deleted. [Undo]".
 
 ## Consequences

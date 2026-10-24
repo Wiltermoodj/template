@@ -19,7 +19,7 @@ A unified architectural standard is required to enforce compact single-row toolb
 - **Maximum Vertical Height:** Standard page toolbars must strictly enforce a maximum height of **52px across all screen sizes** (mobile, tablet, desktop). Multi-row wrapping is strictly eliminated in favor of dynamic single-row adaptive priority collapse.
 - **Strict Prohibition of Horizontal & Vertical Scrolling:** Horizontal scrolling (`overflow-x-auto`) and vertical scrolling (`overflow-y-auto`) are **strictly banned** on page toolbars. Toolbars must fit statically on a single 52px row regardless of container width.
 - **Persistent Overflow Anchor (`MoreVertical`):** The overflow menu button (`MoreVertical` / `⋮` three vertical dots) is an **absolute persistent anchor** on the far right of `PageToolbarRight`. It remains permanently visible on the toolbar across all screen widths.
-- **Dynamic Single-Row Priority Collapse Engine:** Toolbars utilize container measurement (`ResizeObserver` / Container Queries) to track available container width in real-time. As container space narrows, controls adapt and collapse in a deterministic 7-stage priority sequence to preserve the single 52px row.
+- **Dynamic Single-Row Priority Collapse Engine:** Toolbars use container measurement (`ResizeObserver` / Container Queries) to track available container width in real-time. As container space narrows, controls adapt and collapse in a deterministic 7-stage priority sequence to preserve the single 52px row.
 
 ### 2. Header Zone Division & Priority Architecture
 
@@ -47,7 +47,7 @@ Controls placed in `PageToolbarRight` define an explicit priority tier governing
 When width constraints occur, items adapt in the following strict order:
 1. **Stage 1 (Search Bar Input Collapse):** Compact search input (`w-[240px]`) collapses into a borderless Search icon button (`[🔍]`). Clicking this icon opens the mobile Search Dialog.
 2. **Stage 2 (Utility Controls Overflow):** Lower priority utility controls (`priority="utility"`), evaluated left-to-right, move into the `MoreVertical` dropdown menu.
-3. **Stage 3 (Primary CTA Text Collapse):** Primary CTA button transitions from `Icon + Text` (e.g., `[+] Add Contact`) to `Icon-Only` while preserving its variant framing (`variant="default"` accent color & styling).
+3. **Stage 3 (Primary CTA Text Collapse):** Primary CTA button transitions from `Icon + Text` (for example, `[+] Add Contact`) to `Icon-Only` while preserving its variant framing (`variant="default"` accent color & styling).
 4. **Stage 4 (Search Icon Overflow):** Collapsed Search icon button (`priority="search"`) moves into the `MoreVertical` dropdown menu as `[🔍] Search...` list item.
 5. **Stage 5 (Secondary CTA Overflow):** Secondary button (`priority="secondary"`) moves into the `MoreVertical` dropdown menu as `[Icon] Label` list item.
 6. **Stage 6 (Primary CTA Overflow):** Primary CTA icon button (`priority="primary"`) moves into the `MoreVertical` dropdown menu as top-level highlighted `[Icon] Label` list item.
@@ -60,14 +60,14 @@ When controls enter the overflow dropdown:
 - **Search Item Action:** Selecting `Search...` opens the focusable Search Dialog.
 
 ### 3. Toolbar Button Implementation Rules (Visual Look)
-Governed strictly by [ADR 0043 - Button Text vs Icon Rules](0043-button-text-vs-icon-rules.md):
+Governed strictly by [ADR 0043 - Button Text against Icon Rules](0043-button-text-against-icon-rules.md):
 
 - **Primary CTA (Icon + Text Button):**
-  - The page or section's single Primary CTA (e.g., `[+] Add Contact`) **must use the Icon + Text** format at rest.
+  - The page or section's single Primary CTA (for example, `[+] Add Contact`) **must use the Icon + Text** format at rest.
   - It uses standard visual framing (`variant="default" h-9 px-4`) to offer a clear, high-contrast focal point.
   - On narrow viewports (Stage 3), it collapses to an icon-only button (`h-9 w-9`) while maintaining `variant="default"` styling.
 - **Auxiliary & Utility Options (Icon-Only Borderless Buttons):**
-  - All non-primary utility controls (e.g., `[⛛] Filter`, `[↑] Import`, `[↓] Export`, `[⋮] More Actions`) **must render as Icon-Only** with no visible text on the button face.
+  - All non-primary utility controls (for example, `[⛛] Filter`, `[↑] Import`, `[↓] Export`, `[⋮] More Actions`) **must render as Icon-Only** with no visible text on the button face.
   - **No Border:** Borderless framing (`border-none` / transparent background `variant="ghost"` / `variant="outline" border-none`).
   - **Full-Height Icon:** Icon scale expands to match the total height of the button container.
   - **Tooltip Interaction:** Toolbar icon-only buttons use a **200–300ms hover delay** before displaying a tooltip with descriptive text.
